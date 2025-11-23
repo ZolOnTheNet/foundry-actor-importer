@@ -1,0 +1,39 @@
+<form class="actor-importer-dialog">
+    <div class="form-group">
+      <label for="import-format">Format d'import :</label>
+      <select id="import-format" name="format">
+        <option value="text">Texte (Stat Block)</option>
+        <option value="csv">CSV</option>
+        <option value="json">JSON</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="actor-type">Type d'acteur :</label>
+      <select id="actor-type" name="actorType">
+        <option value="npc">PNJ</option>
+        <option value="character">Personnage</option>
+      </select>
+    </div>
+    
+    <div id="text-options" class="format-options">
+      <p><strong>Format Texte :</strong> Collez un stat block Daggerheart ou du texte libre.</p>
+      <p>Le parseur détecte automatiquement les stat blocks Daggerheart et extrait les informations appropriées.</p>
+    </div>
+    
+    <div id="csv-options" class="format-options" style="display: none;">
+      <p><strong>Format CSV :</strong> Première ligne = en-têtes, deuxième ligne = valeurs.</p>
+      <p>Colonnes supportées : name, hp, stress, evasion, description</p>
+      <p>Exemple : <code>name,hp,stress,description<br>"Gobelin",5,2,"Un petit gobelin vicieux"</code></p>
+    </div>
+    
+    <div id="json-options" class="format-options" style="display: none;">
+      <p><strong>Format JSON :</strong> JSON d'acteur Foundry VTT complet.</p>
+      <p>Doit contenir au minimum les champs 'name' et 'type'.</p>
+    </div>
+    
+    <div class="form-group">
+      <label for="import-text">Données à importer :</label>
+      <textarea id="import-text" name="importText" rows="15" placeholder="Collez vos données ici..."></textarea>
+    </div>
+  </form>

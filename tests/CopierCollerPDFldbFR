@@ -1,0 +1,73 @@
+Dans l'ordre : physiques, air, foudre, ténèbres, terre, feu, glace, lumière et poison
+  ' (Physique) a (air) b (foudre) a (ténèbre) E (terre) f (feu) i (glace) l (lumière)  b (poison)
+
+CHAUVE-SOURIS VAMPIRE Niv. 5 w BÊTE
+Ces prédateurs de grande taille s’en prennent souvent aux gens et aux
+animaux. Ils manifestent une intelligence surprenante.
+Traits typiques : peur de la lumière, agressive, bruyante, maligne
+DEX d10 INT d8 PUI d6 VOL d8 PV 50 w 25 PM 45 Init. 9
+DEF +0 DEF M. +0 ' a VU b a E RS f i l b RS
+ATTAQUES DE BASE
+$ Buveuse de sang w【 DEX + DEX】 w【 VH + 5】 dégâts physiques. Ensuite, la chauve-souris
+vampire regagne un nombre de PV égal à la moitié de ceux perdus par la cible.
+a Cri perçant w【 DEX + VOL】 w【 VH + 5】 dégâts d’air, et la cible subit l’état étourdi.
+RÈGLES SPÉCIALES
+Vol w Voir page 309 pour les effets détaillés de cette compétence.
+
+GARGANTURAT Niv. 5 w BÊTE
+De grands rats qui vivent dans les égouts et les tunnels. Leur morsure
+peut provoquer une violente fièvre, mais le feu les effraie.
+Traits typiques : peur du feu, rapide, affamé, féroce
+DEX d12 INT d8 PUI d6 VOL d6 PV 40 w 20 PM 35 Init. 14
+DEF +0 DEF M. +0 ' a b a E RS f VU i l b RS
+ATTAQUES DE BASE
+$ Vilaine morsure w【 DEX + PUI】 w【 VH + 5】 dégâts physiques et la cible subit l’état
+empoisonné.
+RÈGLES SPÉCIALES
+Rat acculé w Tant qu’il est en Crise, le garganturat bénéficie d’un bonus de +3 à tous les tests.
+Vif w Quand le garganturat remplit ou efface des sections de Cadran visant à s’échapper ou à
+poursuivre quelqu’un, il peut en remplir ou en effacer une de plus.
+
+HURLEUR GRIS Niv. 5 w BÊTE
+Souvent dressées comme gardiens, ces grandes créatures canines se
+révèlent très fidèles envers leurs propriétaires et leurs compagnons.
+Traits typiques : lourd, résistant, lent, défend son territoire
+DEX d10 INT d8 PUI d8 VOL d6 PV 50 w 25 PM 35 Init. 9
+DEF +0 DEF M. +0 ' a RS b a E f i RS l b
+ATTAQUES DE BASE
+$ Morsure féroce w【 DEX + PUI】 +3 w【 VH + 10】 dégâts physiques
+RÈGLES SPÉCIALES
+Protecteur w Quand un autre personnage est en danger, le hurleur gris peut choisir de
+prendre sa place (voir compétence Protection page 201).
+
+TRANCHENILLE Niv. 5 w BÊTE
+Un énorme mille-pattes qui peut se rouler en boule pour repousser les
+attaques, juste avant de se déplier et de mordre.
+Traits typiques : lourd, résistant, lent, défend son territoire
+DEX d8 INT d6 PUI d10 VOL d8 PV 60 w 30 PM 45 Init. 7
+DEF +2 DEF M. +1 ' a b aRS E RS f VU i VU l b
+ATTAQUES DE BASE
+$ Mandibules-ciseaux w【 DEX + PUI】 w【 VH + 5】 dégâts de poison, et la cible subit l’état
+affaibli.
+$ Boule tranchante w【 DEX + PUI】 w【 VH + 5】 dégâts physiques. Si la tranchenille a réalisé
+l’action Garde à son tour précédent, cette attaque inflige 5 dégâts de plus.
+RÈGLES SPÉCIALES
+Boule de chitine w Quand la tranchenille effectue l’action Garde, elle reçoit l’immunité aux
+dégâts physiques jusqu’à la fin de son prochain tour.
+
+
+GARDE Niv. 5 w HUMANOÏDE
+Ces soldats patrouillent généralement dans les rues des villes ou
+escortent des caravanes dans la nature.
+Traits typiques : courageux, discipliné, loyal, entraîné
+DEX d8 INT d8 PUI d8 VOL d8 PV 60 w 30 PM 45 Init. 5
+DEF 11 DEF M. +0 ' a b a E f i l b
+Équipement : lance lourde, arbalète, plates de bronze
+ATTAQUES DE BASE
+$ Lance lourde w【 DEX + PUI】 w【 VH + 12】 dégâts physiques
+a Arbalète w【 DEX + INT】 w【 VH + 8】 dégâts physiques
+RÈGLES SPÉCIALES
+Formation défensive w Le garde reçoit un bonus de +1 à la Défense et à la Défense magique
+tant qu’il reste au moins un autre garde impliqué dans le conflit.
+Protecteur w Quand un autre personnage est en danger, le garde peut choisir de prendre sa
+place (voir compétence Protection page 201).

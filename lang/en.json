@@ -1,0 +1,17 @@
+{
+  "ACTOR_IMPORTER": {
+    "DialogTitle": "Actor Importer",
+    "Source": "Source",
+    "TargetSystem": "Target System",
+    "Format": "Import Format",
+    "ActorType": "Actor Type",
+    "ImportData": "Data to Import",
+    "Import": "Import",
+    "Cancel": "Cancel",
+    "Success": "Actor imported successfully!",
+    "Error": "Error during import",
+    "NoData": "Please enter text to import",
+    "InvalidJSON": "Invalid JSON",
+    "InvalidCSV": "Invalid CSV"
+  }
+}
