@@ -8,6 +8,7 @@ Actor Importer is a universal Foundry VTT module (v13+) that imports actors from
 
 **Currently Supported:**
 - Source formats: Daggerheart (English/French), Fabula Ultima (French)
+  - Daggerheart supports both standard format and "Incredible Creatures" format
 - Target systems: Daggerheart, Daggerheart UO, Project FU
 - Import formats: Text (stat blocks), CSV, JSON
 
@@ -88,7 +89,9 @@ Each source has:
 **Daggerheart Sources**:
 Detection patterns: Tier/Niveau, Difficulty, Thresholds, ATK format, range keywords
 
-Expected stat block structure:
+Supports two stat block formats:
+
+**Standard format:**
 ```
 [Name] Tier X
 [Biography lines]
@@ -100,6 +103,26 @@ Experience: [Name] +X
 FEATURES
 [Feature Name] (X) - Action|Reaction|Passive: [Description]
 ```
+
+**Incredible Creatures format:**
+```
+[Name]
+Tier X [Type]
+[Biography lines]
+Motives & Tactics: [description]
+Difficulty: X | Thresholds: X/X | HP: X | Stress: X
+ATK: +X | [Weapon Name]: [Range] | [Damage] [Type]
+FEATURES
+[Feature Name] - Action|Reaction|Passive: [Description]
+```
+
+Key differences in Incredible Creatures format:
+- Name and Tier on separate lines
+- Creature type after Tier (e.g., "Tier 1 Skulk", "Tier 1 Social")
+- Stats condensed on single line with "|" separators
+- Range uses "Melee" or "Far" instead of "Very Close", "Close"
+- Multiple experiences on one line, comma-separated (e.g., "Experience: Ancestral Wisdom +2, Herbology +2")
+- Type extracted and added to actor biography
 
 **Fabula Ultima Sources**:
 Expected structure varies by French sourcebook format - parses villain/NPC blocks with species, level, traits, attacks, and special abilities.

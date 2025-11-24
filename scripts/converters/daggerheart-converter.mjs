@@ -60,11 +60,22 @@ export class DaggerheartConverter extends BaseConverter {
    */
   mapBiography() {
     const bio = this.data.biography || "";
-    if (!bio) return "";
+    const creatureType = this.data.creatureType || "";
 
-    // Convertir les sauts de ligne en paragraphes HTML
-    const lines = bio.split('\n').filter(line => line.trim());
-    return lines.length > 0 ? `<p>${lines.join('</p><p>')}</p>` : "";
+    // Construire la biographie avec le type de créature en en-tête si présent
+    let bioHTML = "";
+
+    if (creatureType) {
+      bioHTML += `<p><strong>Type:</strong> ${creatureType}</p>`;
+    }
+
+    if (bio) {
+      // Convertir les sauts de ligne en paragraphes HTML
+      const lines = bio.split('\n').filter(line => line.trim());
+      bioHTML += lines.length > 0 ? `<p>${lines.join('</p><p>')}</p>` : "";
+    }
+
+    return bioHTML;
   }
 
   /**
@@ -201,15 +212,17 @@ export class DaggerheartConverter extends BaseConverter {
 
   /**
    * Translate range from English to Daggerheart format
-   * @param {string} range - Range in English (e.g., "Very Close", "Close", "Far")
+   * @param {string} range - Range in English (e.g., "Very Close", "Close", "Far", "Melee")
    * @returns {string} Daggerheart range format
    */
   translateRange(range) {
     const rangeMap = {
-      'very close': 'melee',
+      'melee': 'melee',            // Incredible Creatures format
+      'very close': 'melee',       // Standard format
       'close': 'close',
       'far': 'ranged',
       'very far': 'veryFar',
+      'ranged': 'ranged',          // Incredible Creatures format
       'très proche': 'melee',
       'proche': 'close',
       'loin': 'ranged',

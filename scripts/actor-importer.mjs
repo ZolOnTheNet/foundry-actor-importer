@@ -15,6 +15,13 @@ class ActorImporter {
     DIALOG: `modules/${this.ID}/templates/import-dialog.html`
   };
 
+  // Cache pour les images (max 1500 fichiers)
+  static imageCache = {
+    files: [],           // Liste des fichiers avec chemins
+    lastScan: null,      // Date du dernier scan
+    maxFiles: 1500       // Limite de fichiers en cache
+  };
+
   // Configuration des sources disponibles
   static SOURCES = {
     'daggerheart-en': {
@@ -74,11 +81,21 @@ class ActorImporter {
       // Créer une macro globale
       if (game.user.isGM) {
         game.ActorImporter = {
-          show: () => this.showImportDialog()
+          show: () => this.showImportDialog(),
+          refreshImageCache: () => this.refreshImageCache(),
+          getImageForActor: (name) => this.getImageForActor(name),
+          imageCache: this.imageCache  // Pour debug
         };
 
         console.log('Actor Importer | Available via game.ActorImporter.show()');
         ui.notifications.info('Module Actor Importer chargé. Utilisez game.ActorImporter.show() ou cherchez le bouton Importer.');
+
+        // Initialiser le cache d'images si un chemin est configuré
+        const imagePath = game.settings.get(this.ID, 'imagePath');
+        if (imagePath) {
+          console.log('Actor Importer | Auto-refreshing image cache on ready...');
+          this.refreshImageCache();
+        }
       }
     });
 
@@ -121,6 +138,213 @@ class ActorImporter {
       type: String,
       default: 'npc'
     });
+
+    // Chemin du répertoire d'images
+    game.settings.register(this.ID, 'imagePath', {
+      name: game.i18n.localize('ACTOR_IMPORTER.Settings.ImagePath.Name'),
+      hint: game.i18n.localize('ACTOR_IMPORTER.Settings.ImagePath.Hint'),
+      scope: 'world',
+      config: true,
+      type: String,
+      default: ''
+    });
+
+    // Seuil commun minimum pour les noms génériques
+    game.settings.register(this.ID, 'commonThreshold', {
+      name: game.i18n.localize('ACTOR_IMPORTER.Settings.CommonThreshold.Name'),
+      hint: game.i18n.localize('ACTOR_IMPORTER.Settings.CommonThreshold.Hint'),
+      scope: 'world',
+      config: true,
+      type: Number,
+      default: 2,
+      range: {
+        min: 1,
+        max: 10,
+        step: 1
+      }
+    });
+  }
+
+  /**
+   * Scanner le répertoire d'images et mettre en cache les fichiers trouvés
+   * @returns {Promise<void>}
+   */
+  static async refreshImageCache() {
+    const imagePath = game.settings.get(this.ID, 'imagePath');
+    if (!imagePath) {
+      console.log('Actor Importer | No image path configured, skipping cache refresh');
+      return;
+    }
+
+    console.log('Actor Importer | Refreshing image cache from:', imagePath);
+
+    try {
+      // Utiliser l'API FilePicker de Foundry pour parcourir le répertoire
+      const result = await this.scanDirectory(imagePath);
+
+      // Limiter à maxFiles fichiers
+      this.imageCache.files = result.slice(0, this.imageCache.maxFiles);
+      this.imageCache.lastScan = Date.now();
+
+      console.log(`Actor Importer | Image cache refreshed: ${this.imageCache.files.length} files found`);
+    } catch (error) {
+      console.error('Actor Importer | Error refreshing image cache:', error);
+      ui.notifications.warn(`Could not scan image directory: ${error.message}`);
+    }
+  }
+
+  /**
+   * Scanner récursivement un répertoire pour trouver toutes les images
+   * @param {string} directory - Chemin du répertoire à scanner
+   * @param {Array} results - Tableau pour accumuler les résultats
+   * @returns {Promise<Array>} Liste des fichiers trouvés
+   */
+  static async scanDirectory(directory, results = []) {
+    try {
+      // Utiliser FilePicker.browse pour lister les fichiers
+      const browse = await FilePicker.browse('data', directory);
+
+      // Extensions d'images supportées
+      const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.svg', '.gif'];
+
+      // Ajouter les fichiers d'images trouvés
+      for (const file of browse.files) {
+        const ext = file.toLowerCase().substring(file.lastIndexOf('.'));
+        if (imageExtensions.includes(ext)) {
+          // Extraire le nom du fichier sans extension
+          const fileName = file.substring(file.lastIndexOf('/') + 1, file.lastIndexOf('.'));
+          results.push({
+            path: file,
+            name: fileName,
+            nameNormalized: this.normalizeString(fileName)
+          });
+
+          // Arrêter si on atteint la limite
+          if (results.length >= this.imageCache.maxFiles) {
+            console.warn(`Actor Importer | Image cache limit reached (${this.imageCache.maxFiles})`);
+            return results;
+          }
+        }
+      }
+
+      // Scanner récursivement les sous-répertoires
+      for (const dir of browse.dirs) {
+        if (results.length >= this.imageCache.maxFiles) break;
+        await this.scanDirectory(dir, results);
+      }
+
+      return results;
+    } catch (error) {
+      console.error(`Actor Importer | Error scanning directory ${directory}:`, error);
+      return results;
+    }
+  }
+
+  /**
+   * Normaliser une chaîne pour la comparaison
+   * @param {string} str - Chaîne à normaliser
+   * @returns {string} Chaîne normalisée
+   */
+  static normalizeString(str) {
+    return str
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Retirer les accents
+      .replace(/[^a-z0-9]/g, ''); // Retirer les caractères spéciaux
+  }
+
+  /**
+   * Trouver l'image correspondant à un nom d'acteur
+   * @param {string} actorName - Nom de l'acteur
+   * @returns {Promise<string|null>} Chemin de l'image trouvée ou null
+   */
+  static async getImageForActor(actorName) {
+    // Vérifier que le cache est à jour
+    if (!this.imageCache.lastScan) {
+      await this.refreshImageCache();
+    }
+
+    if (this.imageCache.files.length === 0) {
+      return null;
+    }
+
+    const normalizedActorName = this.normalizeString(actorName);
+    console.log(`Actor Importer | Searching image for actor: "${actorName}" (normalized: "${normalizedActorName}")`);
+
+    // ÉTAPE 1 : Chercher d'abord une correspondance EXACTE
+    const exactMatches = this.imageCache.files.filter(file => {
+      return file.nameNormalized === normalizedActorName;
+    });
+
+    if (exactMatches.length > 0) {
+      console.log(`Actor Importer | Exact match found: ${exactMatches[0].path}`);
+      return exactMatches[0].path;
+    }
+
+    // ÉTAPE 2 : Si pas de correspondance exacte, chercher les correspondances partielles
+    const partialMatches = this.imageCache.files.filter(file => {
+      return file.nameNormalized.includes(normalizedActorName) ||
+             normalizedActorName.includes(file.nameNormalized);
+    });
+
+    console.log(`Actor Importer | Found ${partialMatches.length} partial matching images`);
+
+    if (partialMatches.length === 0) {
+      return null;
+    }
+
+    if (partialMatches.length === 1) {
+      console.log(`Actor Importer | Single partial match found: ${partialMatches[0].path}`);
+      return partialMatches[0].path;
+    }
+
+    // ÉTAPE 3 : Plusieurs correspondances partielles - chercher le nom générique
+    const commonThreshold = game.settings.get(this.ID, 'commonThreshold');
+    const genericName = this.findGenericName(partialMatches.map(m => m.name), commonThreshold);
+
+    if (genericName) {
+      console.log(`Actor Importer | Generic name found: "${genericName}", selecting first match: ${partialMatches[0].path}`);
+      // Stocker le nom générique pour référence future si nécessaire
+      // Pour l'instant, on retourne simplement la première image
+      return partialMatches[0].path;
+    }
+
+    // Pas de nom générique valide, retourner la première correspondance partielle
+    console.log(`Actor Importer | No generic name found, using first partial match: ${partialMatches[0].path}`);
+    return partialMatches[0].path;
+  }
+
+  /**
+   * Trouver le nom générique basé sur les caractères communs
+   * @param {Array<string>} names - Liste des noms à comparer
+   * @param {number} threshold - Seuil minimum de caractères communs
+   * @returns {string|null} Nom générique trouvé ou null
+   */
+  static findGenericName(names, threshold) {
+    if (names.length < 2) return null;
+
+    // Trouver le préfixe commun le plus long
+    let commonPrefix = names[0];
+    for (let i = 1; i < names.length; i++) {
+      const name = names[i];
+      let j = 0;
+      while (j < commonPrefix.length && j < name.length && commonPrefix[j] === name[j]) {
+        j++;
+      }
+      commonPrefix = commonPrefix.substring(0, j);
+
+      if (commonPrefix.length < threshold) {
+        return null;
+      }
+    }
+
+    // Vérifier que le préfixe commun respecte le seuil
+    if (commonPrefix.length >= threshold) {
+      console.log(`Actor Importer | Generic name: "${commonPrefix}" (${commonPrefix.length} chars common)`);
+      return commonPrefix;
+    }
+
+    return null;
   }
 
   static setupHooks() {
@@ -473,7 +697,8 @@ class ActorImporter {
     const helpTexts = {
       'daggerheart-en': `
         <p>Format attendu : Stat block Daggerheart anglais</p>
-        <p>Exemple :</p>
+        <p>Supporte les formats standard et "Incredible Creatures"</p>
+        <p>Exemple (format standard) :</p>
         <code style="display: block; white-space: pre; font-size: 11px;">
 Goblin Scout Tier 1
 Difficulty: 12  Thresholds: 8/15
@@ -481,6 +706,19 @@ HP: 5  Stress: 2
 ATK: +3 | Claws: Very Close | 1d8 phy
 FEATURES
 Sneaky - Passive: +2 to Hide checks
+        </code>
+        <p>Exemple (format Incredible Creatures) :</p>
+        <code style="display: block; white-space: pre; font-size: 11px;">
+HEDGE WIZARD
+Tier 1 Social
+A mystic who has learned the ways...
+Motives & Tactics: Live away from others
+Difficulty: 11 | Thresholds: 8/12 | HP: 3 | Stress: 3
+ATK: –2 | Staff: Far | 1d6+1 mag
+Experience: Ancestral Wisdom +2, Herbology +2
+FEATURES
+Dubious Dealings - Passive: Description...
+Hex - Action: Description...
         </code>
       `,
       'daggerheart-fr': `
@@ -550,6 +788,24 @@ Furtif - Passif: +2 aux jets de Discrétion
       }
 
       if (actorData) {
+        // Phase 3 : Rechercher une image correspondante
+        const imagePath = await this.getImageForActor(actorData.name);
+        if (imagePath) {
+          console.log(`Actor Importer | Image found for "${actorData.name}": ${imagePath}`);
+          actorData.img = imagePath;
+          // Également définir le token image si non défini
+          if (!actorData.prototypeToken) {
+            actorData.prototypeToken = {};
+          }
+          if (!actorData.prototypeToken.texture) {
+            actorData.prototypeToken.texture = { src: imagePath };
+          } else if (!actorData.prototypeToken.texture.src) {
+            actorData.prototypeToken.texture.src = imagePath;
+          }
+        } else {
+          console.log(`Actor Importer | No image found for "${actorData.name}"`);
+        }
+
         console.warn('Actor Importer | ========================================');
         console.warn('Actor Importer | Données acteur à créer (stringifié):');
         console.warn(JSON.stringify(actorData, null, 2));
@@ -1117,6 +1373,7 @@ Furtif - Passif: +2 aux jets de Discrétion
       name: lines[0] || "Acteur Importé",
       type: actorType || "npc",
       tier: 1,
+      creatureType: "",  // Type de créature (ex: "Skulk", "Bruiser", etc.)
       difficulty: 14,
       thresholds: { major: 8, severe: 15 },
       health: { value: 0, max: 8 },
@@ -1153,8 +1410,9 @@ Furtif - Passif: +2 aux jets de Discrétion
       if (line.match(this.PATTERNS.tier)) {
         inBiographySection = true;
 
-        // Extraire le numéro de tier (1-4)
-        const tierMatch = line.match(/(Tier|Niveau)\s+(\d+|[I]{1,4})/i);
+        // Extraire le numéro de tier (1-4) et le type de créature optionnel
+        // Format: "Tier 1" ou "Tier 1 Skulk" (Incredible Creatures)
+        const tierMatch = line.match(/(Tier|Niveau)\s+(\d+|[I]{1,4})(?:\s+(.+))?/i);
         if (tierMatch) {
           const tierValue = tierMatch[2];
           // Convertir chiffres romains ou numériques en nombre
@@ -1164,6 +1422,12 @@ Furtif - Passif: +2 aux jets de Discrétion
           else if (tierValue === 'IV') intermediate.tier = 4;
           else intermediate.tier = parseInt(tierValue) || 1;
           console.log("  >> Tier extrait:", intermediate.tier);
+
+          // Extraire le type de créature si présent (ex: "Skulk", "Bruiser")
+          if (tierMatch[3]) {
+            intermediate.creatureType = tierMatch[3].trim();
+            console.log("  >> Type de créature:", intermediate.creatureType);
+          }
         }
 
         // Ajouter cette ligne à la biographie si elle contient plus que juste le tier
@@ -1202,7 +1466,47 @@ Furtif - Passif: +2 aux jets de Discrétion
         continue;
       }
 
-      // Stats principales
+      // Stats principales - Support pour format condensé (Incredible Creatures) et format séparé (standard)
+      // Format condensé: "Difficulty: 12 | Thresholds: 7/12 | HP: 4 | Stress: 3"
+      // Format séparé: lignes individuelles pour chaque stat
+
+      // Détecter si c'est le format condensé (stats sur une ligne avec séparateurs |)
+      const isCondensedFormat = line.match(/Diffi\s?cult[yé]\s*:.*\|.*(?:Thresholds?|Seuils?)\s*:.*\|/i);
+
+      if (isCondensedFormat) {
+        console.log("  >> Format condensé détecté (Incredible Creatures)");
+
+        // Parser tous les stats depuis cette ligne unique
+        const difficultyMatch = line.match(/Diffi\s?cult[yé]\s*:\s*(\d+)/i);
+        if (difficultyMatch) {
+          intermediate.difficulty = parseInt(difficultyMatch[1]);
+          console.log("  >> Difficulty:", intermediate.difficulty);
+        }
+
+        const thresholdMatch = line.match(/(?:Thresholds?|Seuils?)\s*:\s*(\d+)\s*\/\s*(\d+)/i);
+        if (thresholdMatch) {
+          intermediate.thresholds.major = parseInt(thresholdMatch[1]);
+          intermediate.thresholds.severe = parseInt(thresholdMatch[2]);
+          console.log("  >> Thresholds:", intermediate.thresholds);
+        }
+
+        const hpMatch = line.match(/(?:HP|PV)\s*:\s*(\d+)/i);
+        if (hpMatch) {
+          intermediate.health.max = parseInt(hpMatch[1]);
+          intermediate.health.value = 0;
+          console.log("  >> HP:", intermediate.health.max);
+        }
+
+        const stressMatch = line.match(/(?:Stress|Tension)\s*:\s*(\d+)/i);
+        if (stressMatch) {
+          intermediate.stress.max = parseInt(stressMatch[1]);
+          intermediate.stress.value = 0;
+          console.log("  >> Stress:", intermediate.stress.max);
+        }
+        continue;
+      }
+
+      // Format standard (lignes séparées)
       const difficultyMatch = line.match(this.PATTERNS.difficulty);
       if (difficultyMatch) {
         const difficultyValue = line.replace(this.PATTERNS.difficulty, '').match(/(\d+)/);
@@ -1275,26 +1579,33 @@ Furtif - Passif: +2 aux jets de Discrétion
         continue;
       }
 
-      // Experience - Format: "Experience: Nom +valeur"
+      // Experience - Format: "Experience: Nom +valeur" ou "Experience: Nom1 +X, Nom2 +Y"
+      // Support pour expériences multiples séparées par des virgules (Incredible Creatures)
       if (line.match(this.PATTERNS.experience)) {
         const expText = line.replace(this.PATTERNS.experience, '').trim();
-        // Parser le format "Tremor Sense +2" ou "Nom de l'expérience +X"
-        const expMatch = expText.match(/^(.+?)\s*([+\-]\d+)(.*)$/);
-        if (expMatch) {
-          intermediate.experiences.push({
-            name: expMatch[1].trim(),
-            bonus: expMatch[2],  // "+2", "-1", etc.
-            description: expMatch[3] ? expMatch[3].trim() : ""
-          });
-          console.log("  >> Experience:", intermediate.experiences[intermediate.experiences.length - 1]);
-        } else {
-          // Format alternatif sans bonus numérique
-          intermediate.experiences.push({
-            name: expText || "Experience",
-            bonus: "+0",
-            description: ""
-          });
-          console.log("  >> Experience (sans bonus):", intermediate.experiences[intermediate.experiences.length - 1]);
+
+        // Splitter par virgule pour gérer les expériences multiples
+        const expParts = expText.split(',').map(part => part.trim());
+
+        for (const expPart of expParts) {
+          // Parser le format "Tremor Sense +2" ou "Nom de l'expérience +X"
+          const expMatch = expPart.match(/^(.+?)\s*([+\-]\d+)(.*)$/);
+          if (expMatch) {
+            intermediate.experiences.push({
+              name: expMatch[1].trim(),
+              bonus: expMatch[2],  // "+2", "-1", etc.
+              description: expMatch[3] ? expMatch[3].trim() : ""
+            });
+            console.log("  >> Experience:", intermediate.experiences[intermediate.experiences.length - 1]);
+          } else if (expPart) {
+            // Format alternatif sans bonus numérique
+            intermediate.experiences.push({
+              name: expPart || "Experience",
+              bonus: "+0",
+              description: ""
+            });
+            console.log("  >> Experience (sans bonus):", intermediate.experiences[intermediate.experiences.length - 1]);
+          }
         }
         continue;
       }

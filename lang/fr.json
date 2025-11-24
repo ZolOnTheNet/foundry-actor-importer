@@ -12,7 +12,17 @@
     "Error": "Erreur lors de l'import",
     "NoData": "Veuillez entrer du texte à importer",
     "InvalidJSON": "JSON invalide",
-    "InvalidCSV": "CSV invalide"
+    "InvalidCSV": "CSV invalide",
+    "Settings": {
+      "ImagePath": {
+        "Name": "Chemin du Répertoire d'Images",
+        "Hint": "Chemin vers le répertoire contenant les images d'acteurs (relatif au dossier Data de Foundry, ex: 'modules/actor-importer/images')"
+      },
+      "CommonThreshold": {
+        "Name": "Seuil Commun Minimum",
+        "Hint": "Nombre minimum de caractères communs pour créer un nom générique lorsque plusieurs images correspondantes sont trouvées (défaut: 2)"
+      }
+    }
   },
   
   "SETTINGS.AdvantageDieTypesN": "Types de Dés d'Avantage Affichés",

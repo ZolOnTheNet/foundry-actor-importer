@@ -12,6 +12,16 @@
     "Error": "Error during import",
     "NoData": "Please enter text to import",
     "InvalidJSON": "Invalid JSON",
-    "InvalidCSV": "Invalid CSV"
+    "InvalidCSV": "Invalid CSV",
+    "Settings": {
+      "ImagePath": {
+        "Name": "Image Directory Path",
+        "Hint": "Path to directory containing actor images (relative to Foundry Data folder, e.g., 'modules/actor-importer/images')"
+      },
+      "CommonThreshold": {
+        "Name": "Common Name Threshold",
+        "Hint": "Minimum number of common characters to create a generic name when multiple matching images are found (default: 2)"
+      }
+    }
   }
 }
