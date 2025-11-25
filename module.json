@@ -16,7 +16,8 @@
     "scripts/actor-importer.mjs"
   ],
   "styles": [
-    "styles/actor-importer.css"
+    "styles/actor-importer.css",
+    "styles/template-creator.css"
   ],
   "languages": [
     {

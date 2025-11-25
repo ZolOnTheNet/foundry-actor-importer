@@ -1,0 +1,175 @@
+<form class="construct-editor-form">
+  <div class="form-group">
+    <label>{{localize "ACTOR_IMPORTER.ConstructEditor.SelectedText"}}</label>
+    <input type="text" id="construct-text" value="{{text}}" readonly />
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "ACTOR_IMPORTER.ConstructEditor.Pattern"}}</label>
+    <input type="text" id="construct-pattern" name="pattern" value="{{pattern}}" />
+    <p class="hint">{{localize "ACTOR_IMPORTER.ConstructEditor.PatternHint"}}</p>
+    {{#if description}}
+      <p class="detected-pattern">{{localize "ACTOR_IMPORTER.ConstructEditor.Detected"}}: {{description}}</p>
+    {{/if}}
+  </div>
+
+  <div class="form-group">
+    <button type="button" id="test-pattern" class="test-button">
+      <i class="fas fa-play"></i> {{localize "ACTOR_IMPORTER.ConstructEditor.TestPattern"}}
+    </button>
+  </div>
+
+  <div id="construct-groups" class="groups-container">
+    <h4>{{localize "ACTOR_IMPORTER.ConstructEditor.FieldMapping"}}</h4>
+    {{#each groups}}
+      <div class="group-mapping">
+        <span class="group-label">{{localize "ACTOR_IMPORTER.ConstructEditor.Group"}} {{this.index}}:</span>
+        <select class="group-field" name="group-{{@index}}-field">
+          {{#each ../availableFields}}
+            <option value="{{this.value}}" {{#if (eq this.value ../field)}}selected{{/if}}>
+              {{this.label}}
+            </option>
+          {{/each}}
+        </select>
+        <input type="text" class="group-preview" value="{{this.value}}" readonly />
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="form-group">
+    <label>
+      <input type="checkbox" id="save-construct-reusable" name="saveReusable" />
+      {{localize "ACTOR_IMPORTER.ConstructEditor.SaveReusable"}}
+    </label>
+  </div>
+
+  <div class="form-group" id="construct-name-group">
+    <label>{{localize "ACTOR_IMPORTER.ConstructEditor.ConstructName"}}</label>
+    <input type="text" id="construct-name" name="constructName" placeholder="feature-header" />
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "ACTOR_IMPORTER.ConstructEditor.Description"}}</label>
+    <input type="text" name="description" placeholder="{{localize 'ACTOR_IMPORTER.ConstructEditor.DescriptionPlaceholder'}}" />
+  </div>
+
+  <div class="form-group button-group">
+    <button type="submit" class="primary-button">
+      <i class="fas fa-check"></i> {{localize "ACTOR_IMPORTER.Apply"}}
+    </button>
+    <button type="button" class="cancel-button" data-button="cancel">
+      <i class="fas fa-times"></i> {{localize "ACTOR_IMPORTER.Cancel"}}
+    </button>
+  </div>
+</form>
+
+<style>
+.construct-editor-form {
+  padding: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 5px;
+}
+
+.hint {
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+  margin-top: 3px;
+}
+
+.detected-pattern {
+  font-size: 0.9em;
+  color: #007bff;
+  margin-top: 3px;
+}
+
+.groups-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.groups-container h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.group-mapping {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.group-label {
+  min-width: 70px;
+  font-weight: bold;
+}
+
+.group-field {
+  flex: 1;
+}
+
+.group-preview {
+  flex: 1;
+  background-color: #f0f0f0;
+  font-family: monospace;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.primary-button,
+.cancel-button,
+.test-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.primary-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #545b62;
+}
+
+.test-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.test-button:hover {
+  background-color: #218838;
+}
+</style>

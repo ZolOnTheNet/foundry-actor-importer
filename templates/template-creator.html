@@ -1,0 +1,138 @@
+<div class="import-template-window">
+  <!-- Header -->
+  <header class="window-header">
+    <div class="header-controls">
+      <div class="control-group">
+        <label for="mode-select">Mode:</label>
+        <select id="mode-select">
+          <option value="create" {{#if (eq mode "create")}}selected{{/if}}>
+            {{localize "ACTOR_IMPORTER.Mode.Create"}}
+          </option>
+          <option value="apply" {{#if (eq mode "apply")}}selected{{/if}}>
+            {{localize "ACTOR_IMPORTER.Mode.Apply"}}
+          </option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="system-select">System:</label>
+        <select id="system-select">
+          <option value="daggerheart" {{#if (eq currentSystem "daggerheart")}}selected{{/if}}>Daggerheart</option>
+          <option value="dnd5e" {{#if (eq currentSystem "dnd5e")}}selected{{/if}}>D&D 5e</option>
+          <option value="projectfu" {{#if (eq currentSystem "projectfu")}}selected{{/if}}>Project FU</option>
+          <option value="pf2e" {{#if (eq currentSystem "pf2e")}}selected{{/if}}>Pathfinder 2e</option>
+          <option value="other" {{#if (eq currentSystem "other")}}selected{{/if}}>Other</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="template-select">Template:</label>
+        <select id="template-select">
+          <option value="">{{localize "ACTOR_IMPORTER.NewTemplate"}}</option>
+          {{#each templates}}
+            <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div class="button-group">
+        <button id="save-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.SaveTemplate'}}">
+          <i class="fas fa-save"></i>
+        </button>
+        <button id="test-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.TestTemplate'}}">
+          <i class="fas fa-play"></i>
+        </button>
+        {{#if (eq mode "apply")}}
+          <button id="apply-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.ApplyTemplate'}}">
+            <i class="fas fa-check"></i>
+          </button>
+        {{/if}}
+        <button id="export-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.ExportTemplate'}}">
+          <i class="fas fa-file-export"></i>
+        </button>
+        <button id="import-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.ImportTemplate'}}">
+          <i class="fas fa-file-import"></i>
+        </button>
+        <button id="delete-template" class="icon-button danger" title="{{localize 'ACTOR_IMPORTER.DeleteTemplate'}}">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="content-panels">
+    <!-- Left Panel: Source Text -->
+    <div class="panel panel-left">
+      <div class="panel-header">
+        <h3>{{localize "ACTOR_IMPORTER.SourceText"}}</h3>
+        <div class="panel-buttons">
+          <button id="paste-text" title="{{localize 'ACTOR_IMPORTER.PasteText'}}">
+            <i class="fas fa-paste"></i> {{localize "ACTOR_IMPORTER.Paste"}}
+          </button>
+          <button id="clear-text" title="{{localize 'ACTOR_IMPORTER.ClearText'}}">
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="source-text" class="source-editor" contenteditable="true">
+          {{sourceText}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel: Annotated Model -->
+    <div class="panel panel-right">
+      <div class="panel-header">
+        <h3>{{localize "ACTOR_IMPORTER.AnnotatedModel"}}</h3>
+        <div class="panel-buttons">
+          <button id="clear-annotations" title="{{localize 'ACTOR_IMPORTER.ClearAnnotations'}}"
+                  {{#unless hasAnnotations}}disabled{{/unless}}>
+            <i class="fas fa-eraser"></i>
+          </button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div id="annotated-model" class="annotated-viewer">
+          {{{annotatedHtml}}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  {{#if (eq mode "create")}}
+    <div class="toolbar">
+      <div class="toolbar-section">
+        <h4>{{localize "ACTOR_IMPORTER.SystemFields"}} ({{currentSystem}})</h4>
+        <div class="field-buttons" id="system-fields">
+          {{#each systemFields}}
+            <button class="field-btn" data-field="{{this}}">{{this}}</button>
+          {{/each}}
+        </div>
+      </div>
+
+      <div class="toolbar-section">
+        <h4>{{localize "ACTOR_IMPORTER.Tools"}}</h4>
+        <div class="tool-buttons">
+          <button class="tool-btn" id="tool-skip">
+            <i class="fas fa-forward"></i> Skip
+          </button>
+          <button class="tool-btn" id="tool-multiline">
+            <i class="fas fa-align-left"></i> Multi
+          </button>
+          <button class="tool-btn" id="tool-construct">
+            <i class="fas fa-tools"></i> Construct
+          </button>
+          <button class="tool-btn" id="tool-list">
+            <i class="fas fa-list"></i> List
+          </button>
+          <button class="tool-btn" id="tool-transform">
+            <i class="fas fa-exchange-alt"></i> Transform
+          </button>
+        </div>
+      </div>
+    </div>
+  {{/if}}
+</div>

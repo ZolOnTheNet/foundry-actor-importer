@@ -1,0 +1,134 @@
+<form class="save-template-form">
+  <div class="form-group">
+    <label for="template-name">{{localize "ACTOR_IMPORTER.SaveTemplate.Name"}} *</label>
+    <input type="text" id="template-name" name="name" value="{{template.metadata.name}}"
+           placeholder="{{localize 'ACTOR_IMPORTER.SaveTemplate.NamePlaceholder'}}" required />
+  </div>
+
+  <div class="form-group">
+    <label for="template-description">{{localize "ACTOR_IMPORTER.SaveTemplate.Description"}}</label>
+    <textarea id="template-description" name="description" rows="3"
+              placeholder="{{localize 'ACTOR_IMPORTER.SaveTemplate.DescriptionPlaceholder'}}">{{template.metadata.description}}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="template-system">{{localize "ACTOR_IMPORTER.SaveTemplate.System"}} *</label>
+    <select id="template-system" name="system" required>
+      {{#each systems}}
+        <option value="{{this.id}}" {{#if (eq this.id ../template.metadata.system)}}selected{{/if}}>
+          {{this.name}}
+        </option>
+      {{/each}}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="template-id">{{localize "ACTOR_IMPORTER.SaveTemplate.ID"}}</label>
+    <input type="text" id="template-id" name="id" value="{{#if isEdit}}{{template.metadata.id}}{{else}}{{suggestedId}}{{/if}}"
+           {{#if isEdit}}readonly{{/if}} />
+    <p class="hint">{{localize "ACTOR_IMPORTER.SaveTemplate.IDHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="template-author">{{localize "ACTOR_IMPORTER.SaveTemplate.Author"}}</label>
+    <input type="text" id="template-author" name="author" value="{{template.metadata.author}}" />
+  </div>
+
+  <div class="form-group">
+    <label for="template-version">{{localize "ACTOR_IMPORTER.SaveTemplate.Version"}}</label>
+    <input type="text" id="template-version" name="version" value="{{#if template.metadata.version}}{{template.metadata.version}}{{else}}1.0.0{{/if}}"
+           placeholder="1.0.0" />
+  </div>
+
+  <div class="form-group button-group">
+    <button type="submit" class="primary-button">
+      <i class="fas fa-save"></i> {{localize "ACTOR_IMPORTER.SaveTemplate.Save"}}
+    </button>
+    <button type="button" id="export-only" class="secondary-button">
+      <i class="fas fa-file-export"></i> {{localize "ACTOR_IMPORTER.SaveTemplate.ExportOnly"}}
+    </button>
+    <button type="button" class="cancel-button" data-button="cancel">
+      <i class="fas fa-times"></i> {{localize "ACTOR_IMPORTER.Cancel"}}
+    </button>
+  </div>
+</form>
+
+<style>
+.save-template-form {
+  padding: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.hint {
+  font-size: 0.9em;
+  color: #666;
+  font-style: italic;
+  margin-top: 3px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.primary-button,
+.secondary-button,
+.cancel-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.primary-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+}
+
+.secondary-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.secondary-button:hover {
+  background-color: #218838;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #545b62;
+}
+</style>

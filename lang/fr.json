@@ -8,6 +8,7 @@
     "ImportData": "Données à importer",
     "Import": "Importer",
     "Cancel": "Annuler",
+    "Apply": "Appliquer",
     "Success": "Acteur importé avec succès !",
     "Error": "Erreur lors de l'import",
     "NoData": "Veuillez entrer du texte à importer",
@@ -22,6 +23,56 @@
         "Name": "Seuil Commun Minimum",
         "Hint": "Nombre minimum de caractères communs pour créer un nom générique lorsque plusieurs images correspondantes sont trouvées (défaut: 2)"
       }
+    },
+    "TemplateCreator": {
+      "Title": "Créateur de Templates d'Import",
+      "NewTemplate": "Nouveau Template"
+    },
+    "Mode": {
+      "Create": "Mode Création",
+      "Apply": "Mode Application"
+    },
+    "SourceText": "Texte Source",
+    "AnnotatedModel": "Modèle Annoté",
+    "SystemFields": "Champs Système",
+    "Tools": "Outils",
+    "PasteText": "Coller depuis le presse-papiers",
+    "Paste": "Coller",
+    "ClearText": "Effacer le texte",
+    "ClearAnnotations": "Effacer toutes les annotations",
+    "SaveTemplate": "Sauvegarder le Template",
+    "TestTemplate": "Tester le Template",
+    "ApplyTemplate": "Créer un Acteur depuis le Template",
+    "ExportTemplate": "Exporter le Template",
+    "ImportTemplate": "Importer un Template",
+    "DeleteTemplate": "Supprimer le Template",
+    "ConstructEditor": {
+      "Title": "Éditeur de Construct",
+      "SelectedText": "Texte Sélectionné",
+      "Pattern": "Pattern Regex",
+      "PatternHint": "Entrez un pattern regex avec des groupes de capture",
+      "Detected": "Pattern détecté",
+      "TestPattern": "Tester le Pattern",
+      "FieldMapping": "Correspondance des Champs",
+      "Group": "Groupe",
+      "SaveReusable": "Sauvegarder le construct pour réutilisation",
+      "ConstructName": "Nom du Construct",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Décrivez ce construct..."
+    },
+    "SaveTemplate": {
+      "Title": "Sauvegarder le Template",
+      "Name": "Nom du Template",
+      "NamePlaceholder": "ex: Adversaire Daggerheart",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Décrivez à quoi sert ce template...",
+      "System": "Système Cible",
+      "ID": "ID du Template",
+      "IDHint": "Généré automatiquement depuis le nom",
+      "Author": "Auteur",
+      "Version": "Version",
+      "Save": "Sauvegarder",
+      "ExportOnly": "Exporter Uniquement"
     }
   },
   

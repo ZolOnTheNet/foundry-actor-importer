@@ -4,6 +4,10 @@ import { DaggerheartConverter } from './converters/daggerheart-converter.mjs';
 import { DaggerheartUnofficialConverter } from './converters/daggerheart-unofficial-converter.mjs';
 import { ProjectFUConverter } from './converters/projectfu-converter.mjs';
 
+// Import template system
+import { ImportTemplateManager } from './template-manager.mjs';
+import { ImportTemplateApp } from './template-app.mjs';
+
 class ActorImporter {
   static ID = 'actor-importer';
 
@@ -82,12 +86,14 @@ class ActorImporter {
       if (game.user.isGM) {
         game.ActorImporter = {
           show: () => this.showImportDialog(),
+          showTemplateCreator: () => this.showTemplateCreator(),
           refreshImageCache: () => this.refreshImageCache(),
           getImageForActor: (name) => this.getImageForActor(name),
           imageCache: this.imageCache  // Pour debug
         };
 
         console.log('Actor Importer | Available via game.ActorImporter.show()');
+        console.log('Actor Importer | Template Creator available via game.ActorImporter.showTemplateCreator()');
         ui.notifications.info('Module Actor Importer chargé. Utilisez game.ActorImporter.show() ou cherchez le bouton Importer.');
 
         // Initialiser le cache d'images si un chemin est configuré
@@ -103,6 +109,9 @@ class ActorImporter {
   }
 
   static registerSettings() {
+    // Initialize template manager settings
+    ImportTemplateManager.initialize();
+
     // Sauvegarder la dernière source sélectionnée
     game.settings.register(this.ID, 'lastSource', {
       name: 'Last Source',
@@ -381,19 +390,33 @@ class ActorImporter {
       }
       
       if (headerActions) {
-        // Créer le bouton
+        // Créer le bouton d'import
         const button = document.createElement('button');
         button.className = 'import-actor-btn';
         button.title = 'Importer un acteur';
         button.innerHTML = '<i class="fas fa-file-import"></i> Importer';
-        
+
         // Attacher l'événement click
         button.addEventListener('click', (event) => {
           event.preventDefault();
           this.showImportDialog();
         });
-        
+
         headerActions.appendChild(button);
+
+        // Créer le bouton de créateur de templates
+        const templateButton = document.createElement('button');
+        templateButton.className = 'template-creator-btn';
+        templateButton.title = 'Créateur de Templates';
+        templateButton.innerHTML = '<i class="fas fa-file-code"></i> Templates';
+
+        // Attacher l'événement click
+        templateButton.addEventListener('click', (event) => {
+          event.preventDefault();
+          this.showTemplateCreator();
+        });
+
+        headerActions.appendChild(templateButton);
       }
     });
 
@@ -420,6 +443,11 @@ class ActorImporter {
     //     });
     //   }
     // });
+  }
+
+  static showTemplateCreator() {
+    const app = new ImportTemplateApp();
+    app.render(true);
   }
 
   static async showImportDialog() {

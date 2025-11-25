@@ -1,0 +1,390 @@
+/* Import Template Creator Styles */
+
+.import-template-window {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+/* Header */
+.import-template-window .window-header {
+  padding: 10px;
+  background-color: #fff;
+  border-bottom: 2px solid #ddd;
+}
+
+.import-template-window .header-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.import-template-window .control-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.import-template-window .control-group label {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.import-template-window .control-group select {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: white;
+}
+
+.import-template-window .button-group {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.import-template-window .icon-button {
+  padding: 8px 12px;
+  border: 1px solid #007bff;
+  background-color: white;
+  color: #007bff;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.import-template-window .icon-button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.import-template-window .icon-button.danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.import-template-window .icon-button.danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Content Panels */
+.import-template-window .content-panels {
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.import-template-window .panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.import-template-window .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+}
+
+.import-template-window .panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.import-template-window .panel-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.import-template-window .panel-buttons button {
+  padding: 5px 10px;
+  border: 1px solid #6c757d;
+  background-color: white;
+  color: #6c757d;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.import-template-window .panel-buttons button:hover:not(:disabled) {
+  background-color: #6c757d;
+  color: white;
+}
+
+.import-template-window .panel-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.import-template-window .panel-body {
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+}
+
+/* Source Editor */
+.import-template-window .source-editor {
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  min-height: 200px;
+  outline: none;
+  color: #333;
+}
+
+.import-template-window .source-editor:empty:before {
+  content: attr(placeholder);
+  color: #999;
+}
+
+.import-template-window .source-editor .highlight {
+  background-color: rgba(255, 255, 0, 0.3);
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 2px 0;
+}
+
+.import-template-window .source-editor .highlight:hover {
+  background-color: rgba(255, 255, 0, 0.5);
+}
+
+.import-template-window .source-editor .highlight-skip {
+  background-color: rgba(200, 200, 200, 0.3);
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 2px 0;
+}
+
+.import-template-window .source-editor .highlight-skip:hover {
+  background-color: rgba(200, 200, 200, 0.5);
+}
+
+.import-template-window .source-editor .highlight.selected {
+  background-color: rgba(0, 123, 255, 0.3);
+}
+
+/* Annotated Viewer */
+.import-template-window .annotated-viewer {
+  font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  min-height: 200px;
+  color: #333;
+}
+
+.import-template-window .annotated-viewer:empty:before {
+  content: 'Annotations will appear here...';
+  color: #999;
+  font-style: italic;
+}
+
+.import-template-window .annotated-viewer .tag {
+  color: #007bff;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.import-template-window .annotated-viewer .tag:hover {
+  background-color: rgba(0, 123, 255, 0.2);
+}
+
+.import-template-window .annotated-viewer .tag-skip {
+  color: #6c757d;
+  font-weight: bold;
+}
+
+.import-template-window .annotated-viewer .tag-construct {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.import-template-window .annotated-viewer .tag-close {
+  color: #999;
+  font-weight: normal;
+}
+
+/* Toolbar */
+.import-template-window .toolbar {
+  border-top: 2px solid #ddd;
+  padding: 10px;
+  background-color: #f8f9fa;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.import-template-window .toolbar-section {
+  margin-bottom: 15px;
+}
+
+.import-template-window .toolbar-section:last-child {
+  margin-bottom: 0;
+}
+
+.import-template-window .toolbar-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.import-template-window .field-buttons,
+.import-template-window .tool-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.import-template-window .field-btn,
+.import-template-window .tool-btn {
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  background-color: white;
+  color: #007bff;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  transition: all 0.2s;
+}
+
+.import-template-window .field-btn:hover,
+.import-template-window .tool-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.import-template-window .field-btn.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.import-template-window .tool-btn {
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.import-template-window .tool-btn:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Modal Styles */
+.actor-importer.construct-editor-modal,
+.actor-importer.save-template-modal {
+  z-index: 1000;
+}
+
+.actor-importer.construct-editor-modal .window-content,
+.actor-importer.save-template-modal .window-content {
+  padding: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1000px) {
+  .import-template-window .content-panels {
+    flex-direction: column;
+  }
+
+  .import-template-window .panel {
+    min-height: 300px;
+  }
+
+  .import-template-window .header-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .import-template-window .button-group {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* Scrollbar Styling */
+.import-template-window .panel-body::-webkit-scrollbar,
+.import-template-window .toolbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.import-template-window .panel-body::-webkit-scrollbar-track,
+.import-template-window .toolbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.import-template-window .panel-body::-webkit-scrollbar-thumb,
+.import-template-window .toolbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.import-template-window .panel-body::-webkit-scrollbar-thumb:hover,
+.import-template-window .toolbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Parse Results Dialog */
+.parse-results {
+  padding: 10px;
+}
+
+.parse-results h3 {
+  margin-top: 0;
+}
+
+.parse-results pre {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow-x: auto;
+  max-height: 500px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Loading State */
+.import-template-window .loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.import-template-window .loading::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

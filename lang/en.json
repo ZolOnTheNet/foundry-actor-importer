@@ -8,6 +8,7 @@
     "ImportData": "Data to Import",
     "Import": "Import",
     "Cancel": "Cancel",
+    "Apply": "Apply",
     "Success": "Actor imported successfully!",
     "Error": "Error during import",
     "NoData": "Please enter text to import",
@@ -22,6 +23,56 @@
         "Name": "Common Name Threshold",
         "Hint": "Minimum number of common characters to create a generic name when multiple matching images are found (default: 2)"
       }
+    },
+    "TemplateCreator": {
+      "Title": "Import Template Creator",
+      "NewTemplate": "New Template"
+    },
+    "Mode": {
+      "Create": "Create Mode",
+      "Apply": "Apply Mode"
+    },
+    "SourceText": "Source Text",
+    "AnnotatedModel": "Annotated Model",
+    "SystemFields": "System Fields",
+    "Tools": "Tools",
+    "PasteText": "Paste from clipboard",
+    "Paste": "Paste",
+    "ClearText": "Clear text",
+    "ClearAnnotations": "Clear all annotations",
+    "SaveTemplate": "Save Template",
+    "TestTemplate": "Test Template",
+    "ApplyTemplate": "Create Actor from Template",
+    "ExportTemplate": "Export Template",
+    "ImportTemplate": "Import Template",
+    "DeleteTemplate": "Delete Template",
+    "ConstructEditor": {
+      "Title": "Construct Editor",
+      "SelectedText": "Selected Text",
+      "Pattern": "Regex Pattern",
+      "PatternHint": "Enter a regex pattern with capture groups",
+      "Detected": "Detected pattern",
+      "TestPattern": "Test Pattern",
+      "FieldMapping": "Field Mapping",
+      "Group": "Group",
+      "SaveReusable": "Save construct for reuse",
+      "ConstructName": "Construct Name",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Describe this construct..."
+    },
+    "SaveTemplate": {
+      "Title": "Save Template",
+      "Name": "Template Name",
+      "NamePlaceholder": "e.g., Daggerheart Adversary",
+      "Description": "Description",
+      "DescriptionPlaceholder": "Describe what this template is for...",
+      "System": "Target System",
+      "ID": "Template ID",
+      "IDHint": "Generated automatically from the name",
+      "Author": "Author",
+      "Version": "Version",
+      "Save": "Save",
+      "ExportOnly": "Export Only"
     }
   }
 }
