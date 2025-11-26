@@ -10,9 +10,10 @@
 
 /* Header */
 .import-template-window .window-header {
-  padding: 10px;
-  background-color: #fff;
-  border-bottom: 2px solid #ddd;
+  padding: 12px 15px;
+  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  border-bottom: 2px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .import-template-window .header-controls {
@@ -47,13 +48,14 @@
 }
 
 .import-template-window .icon-button {
-  padding: 8px 12px;
+  padding: 5px 10px;
   border: 1px solid #007bff;
   background-color: white;
   color: #007bff;
   border-radius: 3px;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .import-template-window .icon-button:hover {
@@ -85,24 +87,28 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .import-template-window .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #ddd;
+  padding: 12px 15px;
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+  border-bottom: 2px solid #dee2e6;
 }
 
 .import-template-window .panel-header h3 {
   margin: 0;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .import-template-window .panel-buttons {
@@ -110,24 +116,50 @@
   gap: 5px;
 }
 
-.import-template-window .panel-buttons button {
+.import-template-window .panel-btn {
   padding: 5px 10px;
   border: 1px solid #6c757d;
-  background-color: white;
-  color: #6c757d;
+  background-color: #fff;
+  color: #495057;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: normal;
+  white-space: nowrap;
 }
 
-.import-template-window .panel-buttons button:hover:not(:disabled) {
+.import-template-window .panel-btn:hover:not(:disabled) {
   background-color: #6c757d;
   color: white;
 }
 
-.import-template-window .panel-buttons button:disabled {
+.import-template-window .panel-btn.primary {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.import-template-window .panel-btn.primary:hover:not(:disabled) {
+  background-color: #007bff;
+  color: white;
+}
+
+.import-template-window .panel-btn.danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.import-template-window .panel-btn.danger:hover:not(:disabled) {
+  background-color: #dc3545;
+  color: white;
+}
+
+.import-template-window .panel-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.import-template-window .panel-btn i {
+  margin-right: 4px;
 }
 
 .import-template-window .panel-body {
@@ -222,15 +254,20 @@
 
 /* Toolbar */
 .import-template-window .toolbar {
-  border-top: 2px solid #ddd;
-  padding: 10px;
-  background-color: #f8f9fa;
-  max-height: 200px;
+  border-top: 2px solid #dee2e6;
+  padding: 15px;
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+  max-height: 220px;
   overflow-y: auto;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
 }
 
 .import-template-window .toolbar-section {
   margin-bottom: 15px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .import-template-window .toolbar-section:last-child {
@@ -238,30 +275,53 @@
 }
 
 .import-template-window .toolbar-section h4 {
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
+  margin: 0 0 10px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e9ecef;
 }
 
-.import-template-window .field-buttons,
+.import-template-window .field-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 8px;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
 .import-template-window .tool-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
 }
 
+/* BOUTONS SIMPLES ET COMPACTS */
 .import-template-window .field-btn,
 .import-template-window .tool-btn {
-  padding: 5px 10px;
+  display: inline-block;
+  padding: 4px 8px;
+  margin: 0;
   border: 1px solid #007bff;
-  background-color: white;
+  background-color: #fff;
   color: #007bff;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 12px;
-  font-family: 'Courier New', Courier, monospace;
-  transition: all 0.2s;
+  font-size: 11px;
+  font-family: monospace;
+  font-weight: normal;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  width: auto;
+  min-width: auto;
+  max-width: none;
 }
 
 .import-template-window .field-btn:hover,
@@ -284,6 +344,22 @@
 .import-template-window .tool-btn:hover {
   background-color: #28a745;
   color: white;
+}
+
+.import-template-window .tool-btn.active {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+}
+
+/* Eraser mode cursor */
+.import-template-window.eraser-mode .annotated-viewer .tag {
+  cursor: not-allowed;
+}
+
+.import-template-window.eraser-mode .annotated-viewer .tag:hover {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
 }
 
 /* Modal Styles */

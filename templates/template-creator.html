@@ -67,16 +67,19 @@
       <div class="panel-header">
         <h3>{{localize "ACTOR_IMPORTER.SourceText"}}</h3>
         <div class="panel-buttons">
-          <button id="paste-text" title="{{localize 'ACTOR_IMPORTER.PasteText'}}">
-            <i class="fas fa-paste"></i> {{localize "ACTOR_IMPORTER.Paste"}}
+          <button id="paste-text" class="panel-btn primary" title="{{localize 'ACTOR_IMPORTER.PasteText'}}">
+            <i class="fas fa-paste"></i> Paste
           </button>
-          <button id="clear-text" title="{{localize 'ACTOR_IMPORTER.ClearText'}}">
-            <i class="fas fa-eraser"></i>
+          <button id="refresh-view" class="panel-btn" title="Refresh annotated view">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+          <button id="clear-text" class="panel-btn danger" title="{{localize 'ACTOR_IMPORTER.ClearText'}}">
+            <i class="fas fa-eraser"></i> Clear
           </button>
         </div>
       </div>
       <div class="panel-body">
-        <div id="source-text" class="source-editor" contenteditable="true">
+        <div id="source-text" class="source-editor" contenteditable="true" placeholder="Paste or type your source text here...">
           {{sourceText}}
         </div>
       </div>
@@ -87,9 +90,9 @@
       <div class="panel-header">
         <h3>{{localize "ACTOR_IMPORTER.AnnotatedModel"}}</h3>
         <div class="panel-buttons">
-          <button id="clear-annotations" title="{{localize 'ACTOR_IMPORTER.ClearAnnotations'}}"
+          <button id="clear-annotations" class="panel-btn danger" title="{{localize 'ACTOR_IMPORTER.ClearAnnotations'}}"
                   {{#unless hasAnnotations}}disabled{{/unless}}>
-            <i class="fas fa-eraser"></i>
+            <i class="fas fa-eraser"></i> Clear All
           </button>
         </div>
       </div>
@@ -130,6 +133,9 @@
           </button>
           <button class="tool-btn" id="tool-transform">
             <i class="fas fa-exchange-alt"></i> Transform
+          </button>
+          <button class="tool-btn" id="tool-eraser" data-tooltip="Click on a tag to delete it">
+            <i class="fas fa-eraser"></i> Eraser
           </button>
         </div>
       </div>

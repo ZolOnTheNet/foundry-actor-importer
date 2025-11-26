@@ -18,6 +18,7 @@ export class ImportTemplateApp extends Application {
     this.sourceText = '';
     this.selectedRange = null;
     this.constructs = {};
+    this.eraserMode = false;
   }
 
   static get defaultOptions() {
@@ -96,8 +97,11 @@ export class ImportTemplateApp extends Application {
 
     // Text editing
     html.find('#paste-text').on('click', this._onPasteText.bind(this));
+    html.find('#refresh-view').on('click', this._onRefreshView.bind(this));
     html.find('#clear-text').on('click', this._onClearText.bind(this));
     html.find('#source-text').on('mouseup', this._onTextSelection.bind(this));
+    html.find('#source-text').on('input', this._onSourceTextChange.bind(this));
+    html.find('#source-text').on('paste', this._onSourceTextPaste.bind(this));
 
     // Field buttons
     html.find('.field-btn').on('click', this._onFieldButton.bind(this));
@@ -108,6 +112,7 @@ export class ImportTemplateApp extends Application {
     html.find('#tool-construct').on('click', this._onConstructTool.bind(this));
     html.find('#tool-list').on('click', this._onListTool.bind(this));
     html.find('#tool-transform').on('click', this._onTransformTool.bind(this));
+    html.find('#tool-eraser').on('click', this._onEraserTool.bind(this));
 
     // Template actions
     html.find('#save-template').on('click', this._onSaveTemplate.bind(this));
@@ -178,7 +183,7 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
-   * Handle paste text
+   * Handle paste text from clipboard
    * @private
    */
   async _onPasteText(event) {
@@ -189,9 +194,23 @@ export class ImportTemplateApp extends Application {
       this.sourceText = text;
       this.element.find('#source-text').text(text);
       this._updateDisplay();
+      ui.notifications.info('Text pasted successfully');
     } catch (error) {
-      ui.notifications.error('Failed to read clipboard');
+      ui.notifications.error('Failed to read clipboard. Try pasting directly with Ctrl+V');
     }
+  }
+
+  /**
+   * Handle refresh view
+   * @private
+   */
+  _onRefreshView(event) {
+    event.preventDefault();
+    // Sync source text from contenteditable
+    const sourceElement = this.element.find('#source-text');
+    this.sourceText = sourceElement.text();
+    this._updateDisplay();
+    ui.notifications.info('View refreshed');
   }
 
   /**
@@ -201,7 +220,41 @@ export class ImportTemplateApp extends Application {
   _onClearText(event) {
     event.preventDefault();
     this.sourceText = '';
+    this.annotations = [];
     this.element.find('#source-text').text('');
+    this._updateDisplay();
+  }
+
+  /**
+   * Handle source text change (when user types)
+   * @private
+   */
+  _onSourceTextChange(event) {
+    this.sourceText = event.currentTarget.textContent;
+    // Clear annotations when text changes significantly
+    // Note: Pour une implémentation plus robuste, il faudrait ajuster les positions
+    this._updateDisplay();
+  }
+
+  /**
+   * Handle paste into source text
+   * @private
+   */
+  _onSourceTextPaste(event) {
+    event.preventDefault();
+
+    // Get plain text from clipboard
+    const text = (event.originalEvent || event).clipboardData.getData('text/plain');
+
+    // Insert plain text at cursor position
+    const selection = window.getSelection();
+    if (!selection.rangeCount) return;
+
+    selection.deleteFromDocument();
+    selection.getRangeAt(0).insertNode(document.createTextNode(text));
+
+    // Update source text and display
+    this.sourceText = event.currentTarget.textContent;
     this._updateDisplay();
   }
 
@@ -409,6 +462,25 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
+   * Handle eraser tool
+   * @private
+   */
+  _onEraserTool(event) {
+    this.eraserMode = !this.eraserMode;
+    const button = $(event.currentTarget);
+    const window = this.element.find('.import-template-window');
+
+    if (this.eraserMode) {
+      button.addClass('active');
+      window.addClass('eraser-mode');
+      ui.notifications.info('Eraser mode: Click on a tag to delete it');
+    } else {
+      button.removeClass('active');
+      window.removeClass('eraser-mode');
+    }
+  }
+
+  /**
    * Handle save template
    * @private
    */
@@ -609,6 +681,13 @@ export class ImportTemplateApp extends Application {
   _onTagClick(event) {
     event.preventDefault();
     const annotationId = $(event.currentTarget).data('id');
+
+    // If eraser mode is active, delete the annotation
+    if (this.eraserMode) {
+      this._deleteAnnotation(annotationId);
+      return;
+    }
+
     const annotation = this.annotations.find(a => a.id === annotationId);
 
     if (annotation) {
@@ -741,37 +820,19 @@ export class ImportTemplateApp extends Application {
    * @private
    */
   _updateDisplay() {
-    this._highlightSourceText();
+    // Ne pas modifier le source-text pour éviter les problèmes de sélection
+    // Seul le panneau annoté est mis à jour
     this._updateAnnotatedView();
   }
 
   /**
    * Highlight source text with annotations
+   * DÉSACTIVÉ : Causait des problèmes de position de sélection
    * @private
    */
   _highlightSourceText() {
-    const container = this.element.find('#source-text');
-    const sorted = [...this.annotations].sort((a, b) => a.start - b.start);
-
-    let html = '';
-    let lastPos = 0;
-
-    for (const annot of sorted) {
-      if (annot.start > lastPos) {
-        html += this._escapeHtml(this.sourceText.substring(lastPos, annot.start));
-      }
-
-      const className = annot.skip ? 'highlight-skip' : 'highlight';
-      html += `<span class="${className}" data-id="${annot.id}">${this._escapeHtml(annot.selectedText)}</span>`;
-
-      lastPos = annot.end;
-    }
-
-    if (lastPos < this.sourceText.length) {
-      html += this._escapeHtml(this.sourceText.substring(lastPos));
-    }
-
-    container.html(html);
+    // Désactivé - les highlights sont uniquement dans le panneau annoté
+    // pour ne pas perturber la sélection de texte
   }
 
   /**

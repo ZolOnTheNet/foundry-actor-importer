@@ -1,11 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(cmd //c:*)",
-      "Bash(git checkout:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nAdd configurable template system for visual import model creation\n\nImplemented a comprehensive visual template creation system that allows users to:\n- Visually annotate example text to create reusable import templates\n- Apply templates to new text for automated actor creation\n- Support multiple parsing modes (toNewline, toSpace, toChar, multiline, regex, construct, list)\n- Save, export, and import templates as JSON files\n- Manage templates per game system with full CRUD operations\n\nNew Features:\n- ImportTemplateManager: Template storage and management with Foundry settings\n- TemplateParser: Token-based parser engine with transformation support\n- ImportTemplateApp: Dual-panel visual annotation UI (create/apply modes)\n- ConstructEditorModal: Pattern editor for regex-based field extraction\n- SaveTemplateModal: Template metadata editor with export functionality\n- Template library with per-system organization\n\nUI Components:\n- Split-panel interface (source text + annotated model)\n- System-specific field buttons (Daggerheart, D&D 5e, Project FU, etc.)\n- Annotation tools (Skip, Multiline, Construct, List, Transform)\n- Real-time visual feedback with highlighting\n- Template test/preview functionality\n\nTechnical Implementation:\n- ES6 modules (.mjs) following existing module architecture\n- Handlebars templates for consistent UI rendering\n- Comprehensive CSS styling for professional appearance\n- Bilingual support (EN/FR) with i18n strings\n- Integration with existing actor-importer system\n- Accessible via game.ActorImporter.showTemplateCreator()\n\nDocumentation:\n- Complete TEMPLATE_SYSTEM.md guide with workflows and examples\n- API documentation for programmatic template creation\n- Examples for common use cases (Daggerheart stat blocks)\n\nThis system transforms the actor import process from hardcoded parsers to\nuser-configurable visual templates, enabling support for any text-based\nformat without code changes.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
