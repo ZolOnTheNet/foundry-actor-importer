@@ -1,0 +1,281 @@
+{
+  "templateFormat": "fvtt-import-v2",
+  "version": "2.0.0",
+  "metadata": {
+    "id": "daggerheart-standard",
+    "name": "Daggerheart Standard",
+    "system": "daggerheart",
+    "compatibleSystems": ["daggerheart", "daggerheart-unofficial"],
+    "author": "Actor Importer Module",
+    "description": "Standard format from Daggerheart core rulebook for adversary stat blocks",
+    "created": "2025-11-27T10:00:00.000Z",
+    "updated": "2025-11-27T10:00:00.000Z",
+    "isGlobal": true
+  },
+  "annotations": [
+    {
+      "id": "ann-name",
+      "start": 0,
+      "end": 6,
+      "field": "name",
+      "selectedText": "Goblin",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(0, 70%, 85%)",
+        "border": "hsl(0, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-tier",
+      "start": 7,
+      "end": 13,
+      "field": "tier",
+      "selectedText": "Tier 1",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(30, 70%, 85%)",
+        "border": "hsl(30, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-biography",
+      "start": 14,
+      "end": 85,
+      "field": "biography",
+      "selectedText": "Small, cunning creatures that travel in packs and use clever tactics.",
+      "mode": "toPattern",
+      "pattern": "Motives",
+      "colors": {
+        "background": "hsl(60, 70%, 85%)",
+        "border": "hsl(60, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-motives",
+      "start": 102,
+      "end": 145,
+      "field": "motives",
+      "selectedText": "Steal and scavenge; avoid direct confrontation",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(90, 70%, 85%)",
+        "border": "hsl(90, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-difficulty",
+      "start": 158,
+      "end": 159,
+      "field": "difficulty",
+      "selectedText": "2",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(120, 70%, 85%)",
+        "border": "hsl(120, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-thresholds",
+      "start": 174,
+      "end": 177,
+      "field": "thresholds",
+      "selectedText": "2/4",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(150, 70%, 85%)",
+        "border": "hsl(150, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-hp",
+      "start": 183,
+      "end": 184,
+      "field": "hp",
+      "selectedText": "5",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(180, 70%, 85%)",
+        "border": "hsl(180, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-stress",
+      "start": 195,
+      "end": 196,
+      "field": "stress",
+      "selectedText": "3",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(210, 70%, 85%)",
+        "border": "hsl(210, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-attack-bonus",
+      "start": 203,
+      "end": 204,
+      "field": "attack-bonus",
+      "selectedText": "2",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(240, 70%, 85%)",
+        "border": "hsl(240, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-name",
+      "start": 208,
+      "end": 221,
+      "field": "weapon-name",
+      "selectedText": "Rusty Dagger",
+      "mode": "toPattern",
+      "pattern": ":",
+      "colors": {
+        "background": "hsl(270, 70%, 85%)",
+        "border": "hsl(270, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-range",
+      "start": 223,
+      "end": 233,
+      "field": "weapon-range",
+      "selectedText": "Very Close",
+      "mode": "toPattern",
+      "pattern": "|",
+      "colors": {
+        "background": "hsl(300, 70%, 85%)",
+        "border": "hsl(300, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-damage",
+      "start": 236,
+      "end": 246,
+      "field": "weapon-damage",
+      "selectedText": "d8 Physical",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(330, 70%, 85%)",
+        "border": "hsl(330, 70%, 55%)"
+      }
+    }
+  ],
+  "constructs": {},
+  "tokens": [
+    {
+      "id": "tok-1",
+      "field": "name",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-2",
+      "field": "tier",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-3",
+      "field": "biography",
+      "mode": "toPattern",
+      "pattern": "Motives"
+    },
+    {
+      "id": "tok-4",
+      "field": "motives",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-5",
+      "field": "difficulty",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-6",
+      "field": "thresholds",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-7",
+      "field": "hp",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-8",
+      "field": "stress",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-9",
+      "field": "attack-bonus",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-10",
+      "field": "weapon-name",
+      "mode": "toPattern",
+      "pattern": ":"
+    },
+    {
+      "id": "tok-11",
+      "field": "weapon-range",
+      "mode": "toPattern",
+      "pattern": "|"
+    },
+    {
+      "id": "tok-12",
+      "field": "weapon-damage",
+      "mode": "toNewline"
+    }
+  ],
+  "mappings": [],
+  "colorData": {
+    "ann-name": {
+      "background": "hsl(0, 70%, 85%)",
+      "border": "hsl(0, 70%, 55%)"
+    },
+    "ann-tier": {
+      "background": "hsl(30, 70%, 85%)",
+      "border": "hsl(30, 70%, 55%)"
+    },
+    "ann-biography": {
+      "background": "hsl(60, 70%, 85%)",
+      "border": "hsl(60, 70%, 55%)"
+    },
+    "ann-motives": {
+      "background": "hsl(90, 70%, 85%)",
+      "border": "hsl(90, 70%, 55%)"
+    },
+    "ann-difficulty": {
+      "background": "hsl(120, 70%, 85%)",
+      "border": "hsl(120, 70%, 55%)"
+    },
+    "ann-thresholds": {
+      "background": "hsl(150, 70%, 85%)",
+      "border": "hsl(150, 70%, 55%)"
+    },
+    "ann-hp": {
+      "background": "hsl(180, 70%, 85%)",
+      "border": "hsl(180, 70%, 55%)"
+    },
+    "ann-stress": {
+      "background": "hsl(210, 70%, 85%)",
+      "border": "hsl(210, 70%, 55%)"
+    },
+    "ann-attack-bonus": {
+      "background": "hsl(240, 70%, 85%)",
+      "border": "hsl(240, 70%, 55%)"
+    },
+    "ann-weapon-name": {
+      "background": "hsl(270, 70%, 85%)",
+      "border": "hsl(270, 70%, 55%)"
+    },
+    "ann-weapon-range": {
+      "background": "hsl(300, 70%, 85%)",
+      "border": "hsl(300, 70%, 55%)"
+    },
+    "ann-weapon-damage": {
+      "background": "hsl(330, 70%, 85%)",
+      "border": "hsl(330, 70%, 55%)"
+    }
+  }
+}

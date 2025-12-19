@@ -29,15 +29,34 @@
         <label for="template-select">Template:</label>
         <select id="template-select">
           <option value="">{{localize "ACTOR_IMPORTER.NewTemplate"}}</option>
-          {{#each templates}}
-            <option value="{{this.id}}">{{this.name}}</option>
-          {{/each}}
+          {{#if globalTemplates.length}}
+            <optgroup label="Global Templates">
+              {{#each globalTemplates}}
+                <option value="{{this.id}}">{{this.name}}</option>
+              {{/each}}
+            </optgroup>
+          {{/if}}
+          {{#if localTemplates.length}}
+            <optgroup label="Local Templates">
+              {{#each localTemplates}}
+                <option value="{{this.id}}">{{this.name}}</option>
+              {{/each}}
+            </optgroup>
+          {{/if}}
         </select>
       </div>
 
+      <div class="control-group">
+        <label for="template-name">Name:</label>
+        <input type="text" id="template-name" placeholder="Enter template name" value="{{currentTemplateName}}" />
+      </div>
+
       <div class="button-group">
-        <button id="save-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.SaveTemplate'}}">
+        <button id="save-template" class="icon-button" title="Save template (Ctrl+S)">
           <i class="fas fa-save"></i>
+        </button>
+        <button id="save-as-template" class="icon-button" title="Save as new template">
+          <i class="fas fa-copy"></i>
         </button>
         <button id="test-template" class="icon-button" title="{{localize 'ACTOR_IMPORTER.TestTemplate'}}">
           <i class="fas fa-play"></i>

@@ -1,0 +1,296 @@
+{
+  "templateFormat": "fvtt-import-v2",
+  "version": "2.0.0",
+  "metadata": {
+    "id": "fabula-ultima-fr",
+    "name": "Fabula Ultima FR",
+    "system": "projectfu",
+    "compatibleSystems": ["projectfu"],
+    "author": "Actor Importer Module",
+    "description": "Format du livre de base Fabula Ultima en français pour les adversaires et PNJ",
+    "created": "2025-11-27T10:00:00.000Z",
+    "updated": "2025-11-27T10:00:00.000Z",
+    "isGlobal": true
+  },
+  "annotations": [
+    {
+      "id": "ann-name",
+      "start": 0,
+      "end": 14,
+      "field": "name",
+      "selectedText": "Garde Impérial",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(0, 70%, 85%)",
+        "border": "hsl(0, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-level",
+      "start": 23,
+      "end": 25,
+      "field": "level",
+      "selectedText": "20",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(30, 70%, 85%)",
+        "border": "hsl(30, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-species",
+      "start": 34,
+      "end": 40,
+      "field": "species",
+      "selectedText": "Humain",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(60, 70%, 85%)",
+        "border": "hsl(60, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-traits",
+      "start": 49,
+      "end": 72,
+      "field": "traits",
+      "selectedText": "Soldat • Elite • Loyal",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(90, 70%, 85%)",
+        "border": "hsl(90, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-might",
+      "start": 82,
+      "end": 84,
+      "field": "might",
+      "selectedText": "d8",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(120, 70%, 85%)",
+        "border": "hsl(120, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-insight",
+      "start": 98,
+      "end": 100,
+      "field": "insight",
+      "selectedText": "d8",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(150, 70%, 85%)",
+        "border": "hsl(150, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-dexterity",
+      "start": 115,
+      "end": 118,
+      "field": "dexterity",
+      "selectedText": "d10",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(180, 70%, 85%)",
+        "border": "hsl(180, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-willpower",
+      "start": 133,
+      "end": 135,
+      "field": "willpower",
+      "selectedText": "d6",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(210, 70%, 85%)",
+        "border": "hsl(210, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-hp",
+      "start": 143,
+      "end": 145,
+      "field": "hp",
+      "selectedText": "60",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(240, 70%, 85%)",
+        "border": "hsl(240, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-mp",
+      "start": 153,
+      "end": 155,
+      "field": "mp",
+      "selectedText": "30",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(270, 70%, 85%)",
+        "border": "hsl(270, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-init",
+      "start": 171,
+      "end": 172,
+      "field": "init",
+      "selectedText": "8",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(300, 70%, 85%)",
+        "border": "hsl(300, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-def",
+      "start": 180,
+      "end": 182,
+      "field": "def",
+      "selectedText": "10",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(330, 70%, 85%)",
+        "border": "hsl(330, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-mdef",
+      "start": 192,
+      "end": 194,
+      "field": "mdef",
+      "selectedText": "10",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(0, 70%, 85%)",
+        "border": "hsl(0, 70%, 55%)"
+      }
+    }
+  ],
+  "constructs": {},
+  "tokens": [
+    {
+      "id": "tok-1",
+      "field": "name",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-2",
+      "field": "level",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-3",
+      "field": "species",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-4",
+      "field": "traits",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-5",
+      "field": "might",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-6",
+      "field": "insight",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-7",
+      "field": "dexterity",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-8",
+      "field": "willpower",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-9",
+      "field": "hp",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-10",
+      "field": "mp",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-11",
+      "field": "init",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-12",
+      "field": "def",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-13",
+      "field": "mdef",
+      "mode": "toNewline"
+    }
+  ],
+  "mappings": [],
+  "colorData": {
+    "ann-name": {
+      "background": "hsl(0, 70%, 85%)",
+      "border": "hsl(0, 70%, 55%)"
+    },
+    "ann-level": {
+      "background": "hsl(30, 70%, 85%)",
+      "border": "hsl(30, 70%, 55%)"
+    },
+    "ann-species": {
+      "background": "hsl(60, 70%, 85%)",
+      "border": "hsl(60, 70%, 55%)"
+    },
+    "ann-traits": {
+      "background": "hsl(90, 70%, 85%)",
+      "border": "hsl(90, 70%, 55%)"
+    },
+    "ann-might": {
+      "background": "hsl(120, 70%, 85%)",
+      "border": "hsl(120, 70%, 55%)"
+    },
+    "ann-insight": {
+      "background": "hsl(150, 70%, 85%)",
+      "border": "hsl(150, 70%, 55%)"
+    },
+    "ann-dexterity": {
+      "background": "hsl(180, 70%, 85%)",
+      "border": "hsl(180, 70%, 55%)"
+    },
+    "ann-willpower": {
+      "background": "hsl(210, 70%, 85%)",
+      "border": "hsl(210, 70%, 55%)"
+    },
+    "ann-hp": {
+      "background": "hsl(240, 70%, 85%)",
+      "border": "hsl(240, 70%, 55%)"
+    },
+    "ann-mp": {
+      "background": "hsl(270, 70%, 85%)",
+      "border": "hsl(270, 70%, 55%)"
+    },
+    "ann-init": {
+      "background": "hsl(300, 70%, 85%)",
+      "border": "hsl(300, 70%, 55%)"
+    },
+    "ann-def": {
+      "background": "hsl(330, 70%, 85%)",
+      "border": "hsl(330, 70%, 55%)"
+    },
+    "ann-mdef": {
+      "background": "hsl(0, 70%, 85%)",
+      "border": "hsl(0, 70%, 55%)"
+    }
+  }
+}

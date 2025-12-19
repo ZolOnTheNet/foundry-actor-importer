@@ -72,11 +72,11 @@ class ActorImporter {
     }
   };
 
-  static initialize() {
+  static async initialize() {
     console.log('Actor Importer | Initializing');
 
-    // Enregistrer les paramètres du module
-    this.registerSettings();
+    // Enregistrer les paramètres du module (async pour charger templates)
+    await this.registerSettings();
 
     // Ajouter une macro globale pour faciliter l'accès
     Hooks.once('ready', () => {
@@ -108,9 +108,9 @@ class ActorImporter {
     this.setupUI();
   }
 
-  static registerSettings() {
-    // Initialize template manager settings
-    ImportTemplateManager.initialize();
+  static async registerSettings() {
+    // Initialize template manager settings (loads global and local templates)
+    await ImportTemplateManager.initialize();
 
     // Sauvegarder la dernière source sélectionnée
     game.settings.register(this.ID, 'lastSource', {
@@ -1750,8 +1750,8 @@ Furtif - Passif: +2 aux jets de Discrétion
 }
 
 // Initialiser le module
-Hooks.once('init', () => {
-  ActorImporter.initialize();
+Hooks.once('init', async () => {
+  await ActorImporter.initialize();
 });
 
 // Exposer la classe globalement pour le debugging

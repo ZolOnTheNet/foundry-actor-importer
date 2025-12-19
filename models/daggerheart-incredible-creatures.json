@@ -1,0 +1,308 @@
+{
+  "templateFormat": "fvtt-import-v2",
+  "version": "2.0.0",
+  "metadata": {
+    "id": "daggerheart-incredible-creatures",
+    "name": "Daggerheart Incredible Creatures",
+    "system": "daggerheart",
+    "compatibleSystems": ["daggerheart", "daggerheart-unofficial"],
+    "author": "Actor Importer Module",
+    "description": "Format from Daggerheart Incredible Creatures supplement with condensed stat lines and creature types",
+    "created": "2025-11-27T10:00:00.000Z",
+    "updated": "2025-11-27T10:00:00.000Z",
+    "isGlobal": true
+  },
+  "annotations": [
+    {
+      "id": "ann-name",
+      "start": 0,
+      "end": 12,
+      "field": "name",
+      "selectedText": "Shadow Skulk",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(0, 70%, 85%)",
+        "border": "hsl(0, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-tier",
+      "start": 13,
+      "end": 19,
+      "field": "tier",
+      "selectedText": "Tier 2",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(30, 70%, 85%)",
+        "border": "hsl(30, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-creature-type",
+      "start": 20,
+      "end": 25,
+      "field": "creature-type",
+      "selectedText": "Skulk",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(60, 70%, 85%)",
+        "border": "hsl(60, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-biography",
+      "start": 26,
+      "end": 98,
+      "field": "biography",
+      "selectedText": "Creatures that lurk in darkness, striking from the shadows with stealth.",
+      "mode": "toPattern",
+      "pattern": "Motives",
+      "colors": {
+        "background": "hsl(90, 70%, 85%)",
+        "border": "hsl(90, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-motives",
+      "start": 115,
+      "end": 165,
+      "field": "motives",
+      "selectedText": "Hunt from the shadows; strike when vulnerable",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(120, 70%, 85%)",
+        "border": "hsl(120, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-difficulty",
+      "start": 178,
+      "end": 179,
+      "field": "difficulty",
+      "selectedText": "3",
+      "mode": "toPattern",
+      "pattern": "|",
+      "colors": {
+        "background": "hsl(150, 70%, 85%)",
+        "border": "hsl(150, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-thresholds",
+      "start": 194,
+      "end": 197,
+      "field": "thresholds",
+      "selectedText": "3/5",
+      "mode": "toPattern",
+      "pattern": "|",
+      "colors": {
+        "background": "hsl(180, 70%, 85%)",
+        "border": "hsl(180, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-hp",
+      "start": 203,
+      "end": 205,
+      "field": "hp",
+      "selectedText": "12",
+      "mode": "toPattern",
+      "pattern": "|",
+      "colors": {
+        "background": "hsl(210, 70%, 85%)",
+        "border": "hsl(210, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-stress",
+      "start": 215,
+      "end": 216,
+      "field": "stress",
+      "selectedText": "5",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(240, 70%, 85%)",
+        "border": "hsl(240, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-attack-bonus",
+      "start": 223,
+      "end": 224,
+      "field": "attack-bonus",
+      "selectedText": "3",
+      "mode": "exact",
+      "colors": {
+        "background": "hsl(270, 70%, 85%)",
+        "border": "hsl(270, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-name",
+      "start": 228,
+      "end": 241,
+      "field": "weapon-name",
+      "selectedText": "Shadow Blade",
+      "mode": "toPattern",
+      "pattern": ":",
+      "colors": {
+        "background": "hsl(300, 70%, 85%)",
+        "border": "hsl(300, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-range",
+      "start": 243,
+      "end": 248,
+      "field": "weapon-range",
+      "selectedText": "Melee",
+      "mode": "toPattern",
+      "pattern": "|",
+      "colors": {
+        "background": "hsl(330, 70%, 85%)",
+        "border": "hsl(330, 70%, 55%)"
+      }
+    },
+    {
+      "id": "ann-weapon-damage",
+      "start": 251,
+      "end": 262,
+      "field": "weapon-damage",
+      "selectedText": "2d8 Physical",
+      "mode": "toNewline",
+      "colors": {
+        "background": "hsl(0, 70%, 85%)",
+        "border": "hsl(0, 70%, 55%)"
+      }
+    }
+  ],
+  "constructs": {},
+  "tokens": [
+    {
+      "id": "tok-1",
+      "field": "name",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-2",
+      "field": "tier",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-3",
+      "field": "creature-type",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-4",
+      "field": "biography",
+      "mode": "toPattern",
+      "pattern": "Motives"
+    },
+    {
+      "id": "tok-5",
+      "field": "motives",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-6",
+      "field": "difficulty",
+      "mode": "toPattern",
+      "pattern": "|"
+    },
+    {
+      "id": "tok-7",
+      "field": "thresholds",
+      "mode": "toPattern",
+      "pattern": "|"
+    },
+    {
+      "id": "tok-8",
+      "field": "hp",
+      "mode": "toPattern",
+      "pattern": "|"
+    },
+    {
+      "id": "tok-9",
+      "field": "stress",
+      "mode": "toNewline"
+    },
+    {
+      "id": "tok-10",
+      "field": "attack-bonus",
+      "mode": "exact"
+    },
+    {
+      "id": "tok-11",
+      "field": "weapon-name",
+      "mode": "toPattern",
+      "pattern": ":"
+    },
+    {
+      "id": "tok-12",
+      "field": "weapon-range",
+      "mode": "toPattern",
+      "pattern": "|"
+    },
+    {
+      "id": "tok-13",
+      "field": "weapon-damage",
+      "mode": "toNewline"
+    }
+  ],
+  "mappings": [],
+  "colorData": {
+    "ann-name": {
+      "background": "hsl(0, 70%, 85%)",
+      "border": "hsl(0, 70%, 55%)"
+    },
+    "ann-tier": {
+      "background": "hsl(30, 70%, 85%)",
+      "border": "hsl(30, 70%, 55%)"
+    },
+    "ann-creature-type": {
+      "background": "hsl(60, 70%, 85%)",
+      "border": "hsl(60, 70%, 55%)"
+    },
+    "ann-biography": {
+      "background": "hsl(90, 70%, 85%)",
+      "border": "hsl(90, 70%, 55%)"
+    },
+    "ann-motives": {
+      "background": "hsl(120, 70%, 85%)",
+      "border": "hsl(120, 70%, 55%)"
+    },
+    "ann-difficulty": {
+      "background": "hsl(150, 70%, 85%)",
+      "border": "hsl(150, 70%, 55%)"
+    },
+    "ann-thresholds": {
+      "background": "hsl(180, 70%, 85%)",
+      "border": "hsl(180, 70%, 55%)"
+    },
+    "ann-hp": {
+      "background": "hsl(210, 70%, 85%)",
+      "border": "hsl(210, 70%, 55%)"
+    },
+    "ann-stress": {
+      "background": "hsl(240, 70%, 85%)",
+      "border": "hsl(240, 70%, 55%)"
+    },
+    "ann-attack-bonus": {
+      "background": "hsl(270, 70%, 85%)",
+      "border": "hsl(270, 70%, 55%)"
+    },
+    "ann-weapon-name": {
+      "background": "hsl(300, 70%, 85%)",
+      "border": "hsl(300, 70%, 55%)"
+    },
+    "ann-weapon-range": {
+      "background": "hsl(330, 70%, 85%)",
+      "border": "hsl(330, 70%, 55%)"
+    },
+    "ann-weapon-damage": {
+      "background": "hsl(0, 70%, 85%)",
+      "border": "hsl(0, 70%, 55%)"
+    }
+  }
+}

@@ -2,6 +2,7 @@ import { ImportTemplateManager } from './template-manager.mjs';
 import { TemplateParser } from './template-parser.mjs';
 import { ConstructEditorModal } from './modals/construct-editor-modal.mjs';
 import { SaveTemplateModal } from './modals/save-template-modal.mjs';
+import { ColorManager } from './visual-model/color-manager.mjs';
 
 /**
  * Import Template Application
@@ -19,6 +20,8 @@ export class ImportTemplateApp extends Application {
     this.selectedRange = null;
     this.constructs = {};
     this.eraserMode = false;
+    this.colorManager = new ColorManager(); // Color management for tokens
+    this.fieldColors = new Map(); // Map field name → colors for button styling
   }
 
   static get defaultOptions() {
@@ -34,17 +37,29 @@ export class ImportTemplateApp extends Application {
   }
 
   getData() {
-    const systemTemplates = ImportTemplateManager.getTemplates(this.currentSystem);
-    const templates = Object.entries(systemTemplates).map(([id, template]) => ({
-      id,
-      name: template.metadata.name
+    const allTemplates = ImportTemplateManager.getTemplatesForSystem(this.currentSystem);
+
+    // Format templates for dropdown with global/local separation
+    const globalTemplates = allTemplates.global.map(t => ({
+      id: `global:${t.metadata.id}`,
+      name: `${t.metadata.name} (global)`,
+      isGlobal: true
+    }));
+
+    const localTemplates = allTemplates.local.map(t => ({
+      id: `local:${t.metadata.id}`,
+      name: t.metadata.name,
+      isGlobal: false
     }));
 
     return {
       mode: this.mode,
       currentSystem: this.currentSystem,
-      templates: templates,
+      globalTemplates: globalTemplates,
+      localTemplates: localTemplates,
       currentTemplate: this.currentTemplate,
+      currentTemplateName: this.currentTemplate?.metadata?.name?.replace(' (global)', '') || '',
+      isGlobalTemplate: this.currentTemplate?.metadata?.isGlobal || false,
       sourceText: this.sourceText,
       annotatedHtml: this._generateAnnotatedHtml(),
       systemFields: this._getSystemFields(),
@@ -87,6 +102,22 @@ export class ImportTemplateApp extends Application {
     return fieldSets[this.currentSystem] || fieldSets.other;
   }
 
+  /**
+   * Check if a field exists in the current system schema
+   * Fields are considered valid if they are in the known fields list
+   * @private
+   * @param {string} field - Field path to check
+   * @returns {boolean} True if field exists in system
+   */
+  _fieldExistsInSystem(field) {
+    if (!field) return true; // No field means it's a special annotation (skip, construct)
+
+    const knownFields = this._getSystemFields();
+
+    // Check if field is in the known fields list
+    return knownFields.includes(field);
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -114,8 +145,12 @@ export class ImportTemplateApp extends Application {
     html.find('#tool-transform').on('click', this._onTransformTool.bind(this));
     html.find('#tool-eraser').on('click', this._onEraserTool.bind(this));
 
+    // Template name input
+    html.find('#template-name').on('input', this._onTemplateNameChange.bind(this));
+
     // Template actions
     html.find('#save-template').on('click', this._onSaveTemplate.bind(this));
+    html.find('#save-as-template').on('click', this._onSaveAsTemplate.bind(this));
     html.find('#test-template').on('click', this._onTestTemplate.bind(this));
     html.find('#apply-template').on('click', this._onApplyTemplate.bind(this));
     html.find('#export-template').on('click', this._onExportTemplate.bind(this));
@@ -125,6 +160,10 @@ export class ImportTemplateApp extends Application {
     // Annotated model interaction
     html.find('#annotated-model').on('click', '.tag', this._onTagClick.bind(this));
     html.find('#annotated-model').on('contextmenu', '.tag', this._onTagRightClick.bind(this));
+
+    // Hover tooltips for annotations
+    html.find('#annotated-model').on('mouseenter', '.tag, .annotated-text', this._onTagHover.bind(this));
+    html.find('#annotated-model').on('mouseleave', '.tag, .annotated-text', this._onTagLeave.bind(this));
 
     // Clear annotations
     html.find('#clear-annotations').on('click', this._onClearAnnotations.bind(this));
@@ -144,20 +183,36 @@ export class ImportTemplateApp extends Application {
    * @private
    */
   _onTemplateSelect(event) {
-    const templateId = event.target.value;
+    const fullId = event.target.value;
 
-    if (!templateId) {
+    if (!fullId) {
       this.currentTemplate = null;
       this.annotations = [];
       this.render();
       return;
     }
 
-    const template = ImportTemplateManager.getTemplate(this.currentSystem, templateId);
+    // Parse ID format: "global:template-id" or "local:template-id"
+    const [type, templateId] = fullId.split(':');
+    const isGlobal = type === 'global';
+
+    const template = ImportTemplateManager.getTemplate(templateId, isGlobal);
 
     if (template) {
       this.currentTemplate = template;
       this.constructs = template.constructs || {};
+
+      // Load annotations if present
+      if (template.annotations && Array.isArray(template.annotations)) {
+        this.annotations = template.annotations;
+      } else {
+        this.annotations = [];
+      }
+
+      // Restore color manager state
+      if (template.colorData) {
+        this.colorManager.import(template.colorData);
+      }
 
       // If in apply mode, we're done
       if (this.mode === 'apply') {
@@ -294,15 +349,22 @@ export class ImportTemplateApp extends Application {
       return;
     }
 
-    // Create annotation
+    // Create annotation with colors
+    const annotationId = `ann-${Date.now()}`;
     const annotation = {
-      id: `ann-${Date.now()}`,
+      id: annotationId,
       start: this.selectedRange.start,
       end: this.selectedRange.end,
       field: field,
       selectedText: this.selectedRange.text,
-      mode: this._detectMode(this.selectedRange)
+      mode: this._detectMode(this.selectedRange),
+      colors: this.colorManager.assignColor(annotationId) // Assign unique color
     };
+
+    // Store field color for button styling
+    if (!this.fieldColors.has(field)) {
+      this.fieldColors.set(field, annotation.colors);
+    }
 
     this.annotations.push(annotation);
     this._updateDisplay();
@@ -313,7 +375,7 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
-   * Handle skip tool
+   * Handle skip tool (separator/Next)
    * @private
    */
   _onSkipTool(event) {
@@ -327,7 +389,8 @@ export class ImportTemplateApp extends Application {
       start: this.selectedRange.start,
       end: this.selectedRange.end,
       skip: true,
-      selectedText: this.selectedRange.text
+      selectedText: this.selectedRange.text,
+      colors: this.colorManager.getNextColor() // Use neutral gray for separators
     };
 
     this.annotations.push(annotation);
@@ -481,37 +544,141 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
-   * Handle save template
+   * Handle template name change
    * @private
    */
-  _onSaveTemplate(event) {
+  _onTemplateNameChange(event) {
+    // Just track that name has changed - no action needed yet
+    const newName = event.target.value;
+    console.log('Template name changed to:', newName);
+  }
+
+  /**
+   * Handle save template (simplified - direct save)
+   * @private
+   */
+  async _onSaveTemplate(event) {
     if (this.annotations.length === 0) {
       ui.notifications.warn('Please create at least one annotation first');
       return;
     }
 
-    const modal = new SaveTemplateModal({
-      annotations: this.annotations,
-      sourceText: this.sourceText,
-      template: this.currentTemplate,
-      callback: async (metadata, exportOnly) => {
-        const template = this._convertToTemplate(metadata);
+    // Get name from input field
+    const name = this.element.find('#template-name').val().trim();
 
-        if (exportOnly) {
-          return template; // Return for export
-        } else {
-          await ImportTemplateManager.saveTemplate(
-            template.metadata.system,
-            template.metadata.id,
-            template
-          );
-          this.currentTemplate = template;
-          this.render();
+    if (!name) {
+      ui.notifications.warn('Please enter a template name');
+      return;
+    }
+
+    // If editing a global template, force "Save As" instead
+    if (this.currentTemplate?.metadata?.isGlobal) {
+      ui.notifications.warn('Cannot overwrite global templates. Use "Save As" instead.');
+      return;
+    }
+
+    // Build metadata
+    const metadata = {
+      id: this.currentTemplate?.metadata?.id || this._generateTemplateId(name),
+      name: name,
+      system: this.currentSystem,
+      compatibleSystems: [this.currentSystem],
+      description: this.currentTemplate?.metadata?.description || ''
+    };
+
+    // If updating existing template, preserve created date
+    if (this.currentTemplate) {
+      metadata.created = this.currentTemplate.metadata.created;
+    }
+
+    // Convert to template
+    const template = this._convertToTemplate(metadata);
+
+    // Save
+    await ImportTemplateManager.saveLocalTemplate(template);
+
+    this.currentTemplate = template;
+
+    ui.notifications.info(`Template "${name}" saved successfully`);
+
+    // Refresh to update dropdown
+    this.render();
+  }
+
+  /**
+   * Handle save as template (create new copy)
+   * @private
+   */
+  async _onSaveAsTemplate(event) {
+    if (this.annotations.length === 0) {
+      ui.notifications.warn('Please create at least one annotation first');
+      return;
+    }
+
+    // Get name from input field
+    const baseName = this.element.find('#template-name').val().trim() ||
+                     this.currentTemplate?.metadata?.name ||
+                     'New Template';
+
+    // Open dialog to confirm/edit name
+    new Dialog({
+      title: 'Save Template As',
+      content: `
+        <form>
+          <div class="form-group">
+            <label>Template Name:</label>
+            <input type="text" name="templateName" value="${baseName}" autofocus style="width: 100%;" />
+          </div>
+          <div class="form-group">
+            <label>Description (optional):</label>
+            <textarea name="description" rows="3" style="width: 100%;">${this.currentTemplate?.metadata?.description || ''}</textarea>
+          </div>
+        </form>
+      `,
+      buttons: {
+        save: {
+          label: 'Save',
+          callback: async (html) => {
+            const name = html.find('[name="templateName"]').val().trim();
+            const description = html.find('[name="description"]').val().trim();
+
+            if (!name) {
+              ui.notifications.warn('Please enter a name');
+              return;
+            }
+
+            // Build metadata (always new ID)
+            const metadata = {
+              id: this._generateTemplateId(name),
+              name: name,
+              system: this.currentSystem,
+              compatibleSystems: [this.currentSystem],
+              description: description
+            };
+
+            // Convert to template
+            const template = this._convertToTemplate(metadata);
+
+            // Save as new
+            await ImportTemplateManager.saveLocalTemplate(template);
+
+            this.currentTemplate = template;
+
+            // Update name field
+            this.element.find('#template-name').val(name);
+
+            ui.notifications.info(`Template "${name}" saved successfully`);
+
+            // Refresh
+            this.render();
+          }
+        },
+        cancel: {
+          label: 'Cancel'
         }
-      }
-    });
-
-    modal.render(true);
+      },
+      default: 'save'
+    }).render(true);
   }
 
   /**
@@ -616,10 +783,7 @@ export class ImportTemplateApp extends Application {
       return;
     }
 
-    ImportTemplateManager.exportTemplate(
-      this.currentTemplate.metadata.system,
-      this.currentTemplate.metadata.id
-    );
+    ImportTemplateManager.exportTemplate(this.currentTemplate);
   }
 
   /**
@@ -658,6 +822,12 @@ export class ImportTemplateApp extends Application {
       return;
     }
 
+    // Can't delete global templates
+    if (this.currentTemplate.metadata.isGlobal) {
+      ui.notifications.warn('Cannot delete global templates. Use "Save As" to create a local copy.');
+      return;
+    }
+
     const confirmed = await Dialog.confirm({
       title: 'Delete Template',
       content: `<p>Are you sure you want to delete the template "${this.currentTemplate.metadata.name}"?</p>`,
@@ -665,10 +835,7 @@ export class ImportTemplateApp extends Application {
     });
 
     if (confirmed) {
-      await ImportTemplateManager.deleteTemplate(
-        this.currentTemplate.metadata.system,
-        this.currentTemplate.metadata.id
-      );
+      await ImportTemplateManager.deleteLocalTemplate(this.currentTemplate.metadata.id);
       this.currentTemplate = null;
       this.render();
     }
@@ -723,6 +890,73 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
+   * Handle tag hover - display tooltip with annotation info
+   * @private
+   */
+  _onTagHover(event) {
+    const annotationId = $(event.currentTarget).data('id');
+    const annotation = this.annotations.find(a => a.id === annotationId);
+
+    if (!annotation) return;
+
+    // Remove any existing tooltips
+    $('.annotation-tooltip').remove();
+
+    // Create tooltip content
+    let content = '';
+
+    if (annotation.skip) {
+      content = `<strong>Type:</strong> Next (Separator)<br>`;
+      content += `<strong>Text:</strong> "${this._escapeHtml(annotation.selectedText)}"`;
+    } else if (annotation.constructId) {
+      content = `<strong>Type:</strong> Construct<br>`;
+      content += `<strong>ID:</strong> ${annotation.constructId}<br>`;
+      content += `<strong>Text:</strong> "${this._escapeHtml(annotation.selectedText)}"`;
+    } else {
+      content = `<strong>Field:</strong> ${annotation.field}<br>`;
+
+      if (annotation.mode) {
+        const modeStr = typeof annotation.mode === 'string' ? annotation.mode : annotation.mode.mode;
+        content += `<strong>Mode:</strong> ${modeStr}<br>`;
+      }
+
+      if (annotation.transform && annotation.transform.length > 0) {
+        content += `<strong>Transform:</strong> ${annotation.transform.join(', ')}<br>`;
+      }
+
+      const isUnmapped = !this._fieldExistsInSystem(annotation.field);
+      if (isUnmapped) {
+        content += `<strong style="color: #ff6b6b;">Warning:</strong> Field not in system schema<br>`;
+      }
+
+      content += `<strong>Text:</strong> "${this._escapeHtml(annotation.selectedText)}"`;
+    }
+
+    // Create tooltip element
+    const tooltip = $('<div class="annotation-tooltip"></div>');
+    tooltip.html(content);
+
+    // Position tooltip
+    const rect = event.currentTarget.getBoundingClientRect();
+    tooltip.css({
+      position: 'fixed',
+      left: rect.left + 'px',
+      top: (rect.bottom + 5) + 'px',
+      zIndex: 10000
+    });
+
+    $('body').append(tooltip);
+  }
+
+  /**
+   * Handle tag leave - remove tooltip
+   * @private
+   */
+  _onTagLeave(event) {
+    $('.annotation-tooltip').remove();
+  }
+
+  /**
    * Handle clear annotations
    * @private
    */
@@ -768,7 +1002,7 @@ export class ImportTemplateApp extends Application {
   }
 
   /**
-   * Generate annotated HTML
+   * Generate annotated HTML with colors
    * @private
    */
   _generateAnnotatedHtml() {
@@ -787,21 +1021,36 @@ export class ImportTemplateApp extends Application {
         html += this._escapeHtml(this.sourceText.substring(lastPos, annot.start));
       }
 
-      // Annotation
+      // Get colors for this annotation
+      const colors = annot.colors || this.colorManager.getColor(annot.id) || {
+        background: '#f0f0f0',
+        border: '#ccc'
+      };
+
+      // Check if field is unmapped (will add italics later)
+      const isUnmapped = annot.field && !this._fieldExistsInSystem(annot.field);
+      const unmappedClass = isUnmapped ? ' field-unmapped' : '';
+      const unmappedStyle = isUnmapped ? ' font-style: italic; opacity: 0.7;' : '';
+
+      // Generate inline style
+      const tagStyle = `background-color: ${colors.background}; border-left: 4px solid ${colors.border}; padding: 2px 6px; margin: 0 1px; border-radius: 3px;${unmappedStyle}`;
+      const textStyle = `background-color: ${colors.background}; padding: 2px 4px; border-radius: 3px;${unmappedStyle}`;
+
+      // Annotation with colors
       if (annot.skip) {
-        html += `<span class="tag tag-skip" data-id="${annot.id}">[&gt;&gt;&gt;]</span>`;
-        html += this._escapeHtml(annot.selectedText);
-        html += `<span class="tag-close">[/]</span>`;
+        html += `<span class="tag tag-skip${unmappedClass}" data-id="${annot.id}" data-field="Next" style="${tagStyle}">[Next]</span>`;
+        html += `<span class="annotated-text" data-id="${annot.id}" style="${textStyle}">${this._escapeHtml(annot.selectedText)}</span>`;
+        html += `<span class="tag-close" style="color: #999; font-size: 10px; margin-left: 2px;">[/]</span>`;
       } else if (annot.constructId) {
-        html += `<span class="tag tag-construct" data-id="${annot.id}">[construct:${annot.constructId}]</span>`;
-        html += this._escapeHtml(annot.selectedText);
-        html += `<span class="tag-close">[/]</span>`;
+        html += `<span class="tag tag-construct${unmappedClass}" data-id="${annot.id}" data-field="Construct:${annot.constructId}" style="${tagStyle}">[Construct:${annot.constructId}]</span>`;
+        html += `<span class="annotated-text" data-id="${annot.id}" style="${textStyle}">${this._escapeHtml(annot.selectedText)}</span>`;
+        html += `<span class="tag-close" style="color: #999; font-size: 10px; margin-left: 2px;">[/]</span>`;
       } else {
         const modeStr = typeof annot.mode === 'string' ? annot.mode : annot.mode.mode;
         const modeLabel = modeStr !== 'toNewline' ? ':' + modeStr : '';
-        html += `<span class="tag" data-id="${annot.id}">[${annot.field}${modeLabel}]</span>`;
-        html += this._escapeHtml(annot.selectedText);
-        html += `<span class="tag-close">[/${annot.field.split('.').pop()}]</span>`;
+        html += `<span class="tag${unmappedClass}" data-id="${annot.id}" data-field="${annot.field}" data-mode="${modeStr}" style="${tagStyle}">[${annot.field}${modeLabel}]</span>`;
+        html += `<span class="annotated-text" data-id="${annot.id}" style="${textStyle}">${this._escapeHtml(annot.selectedText)}</span>`;
+        html += `<span class="tag-close" style="color: #999; font-size: 10px; margin-left: 2px;">[/${annot.field.split('.').pop()}]</span>`;
       }
 
       lastPos = annot.end;
@@ -823,6 +1072,7 @@ export class ImportTemplateApp extends Application {
     // Ne pas modifier le source-text pour éviter les problèmes de sélection
     // Seul le panneau annoté est mis à jour
     this._updateAnnotatedView();
+    this._updateFieldButtonColors();
   }
 
   /**
@@ -842,6 +1092,25 @@ export class ImportTemplateApp extends Application {
   _updateAnnotatedView() {
     const container = this.element.find('#annotated-model');
     container.html(this._generateAnnotatedHtml());
+  }
+
+  /**
+   * Update field button colors based on annotations
+   * @private
+   */
+  _updateFieldButtonColors() {
+    // Apply colors to field buttons based on fieldColors map
+    for (const [field, colors] of this.fieldColors.entries()) {
+      const button = this.element.find(`.field-btn[data-field="${field}"]`);
+
+      if (button.length > 0) {
+        button.css({
+          'background-color': colors.background,
+          'border-color': colors.border,
+          'color': '#333' // Keep text dark for readability
+        });
+      }
+    }
   }
 
   /**
@@ -895,17 +1164,34 @@ export class ImportTemplateApp extends Application {
     }
 
     return {
-      templateFormat: 'fvtt-import-v1',
+      templateFormat: 'fvtt-import-v2',
+      version: '2.0.0',
       metadata: {
-        ...metadata,
+        id: metadata.id || this._generateTemplateId(metadata.name),
+        name: metadata.name || 'Unnamed Template',
+        system: metadata.system || this.currentSystem,
+        compatibleSystems: metadata.compatibleSystems || [metadata.system || this.currentSystem],
         author: metadata.author || game.user.name,
-        version: metadata.version || '1.0.0',
+        description: metadata.description || '',
         created: metadata.created || new Date().toISOString(),
-        updated: new Date().toISOString()
+        updated: new Date().toISOString(),
+        isGlobal: false // Always false for user-created templates
       },
+      annotations: this.annotations,
       constructs: this.constructs,
-      tokens: tokens
+      tokens: tokens,
+      mappings: [], // Will be populated by Phase 3
+      colorData: this.colorManager.export()
     };
+  }
+
+  /**
+   * Generate a template ID from name
+   * @private
+   */
+  _generateTemplateId(name) {
+    if (!name) return `template-${Date.now()}`;
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   }
 
   /**
